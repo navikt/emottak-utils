@@ -1,4 +1,4 @@
-package no.nav.emottak.utils
+package no.nav.emottak.utils.serialization
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

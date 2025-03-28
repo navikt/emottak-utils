@@ -1,12 +1,12 @@
-package no.nav.emottak.utils.events
+package no.nav.emottak.utils.kafka.service
 
-import no.nav.emottak.utils.events.model.Event
-import no.nav.emottak.utils.events.model.EventMessageDetails
-import no.nav.emottak.utils.kafka.KafkaPublisherClient
+import no.nav.emottak.utils.kafka.client.EventPublisherClient
+import no.nav.emottak.utils.kafka.model.Event
+import no.nav.emottak.utils.kafka.model.EventMessageDetails
 import org.apache.kafka.clients.producer.RecordMetadata
 
 class EventLoggingService(
-    private val kafkaPublisherClient: KafkaPublisherClient
+    private val kafkaPublisherClient: EventPublisherClient
 ) {
 
     suspend fun logEvent(event: Event): Result<RecordMetadata> =

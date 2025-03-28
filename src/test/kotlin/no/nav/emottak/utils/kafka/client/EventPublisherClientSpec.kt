@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalUuidApi::class)
 
-package no.nav.emottak.utils.kafka
+package no.nav.emottak.utils.kafka.client
 
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
@@ -15,15 +15,16 @@ import no.nav.emottak.utils.config.KeystoreType
 import no.nav.emottak.utils.config.SecurityProtocol
 import no.nav.emottak.utils.config.TruststoreLocation
 import no.nav.emottak.utils.config.TruststoreType
-import no.nav.emottak.utils.events.model.Event
-import no.nav.emottak.utils.events.model.EventType
+import no.nav.emottak.utils.kafka.KafkaSpec
+import no.nav.emottak.utils.kafka.model.Event
+import no.nav.emottak.utils.kafka.model.EventType
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class KafkaPublisherClientSpec : KafkaSpec(
+class EventPublisherClientSpec : KafkaSpec(
     {
         lateinit var settings: Kafka
-        lateinit var publisher: KafkaPublisherClient
+        lateinit var publisher: EventPublisherClient
 
         beforeSpec {
             fun kafkaSettings(): Kafka = Kafka(
@@ -41,7 +42,7 @@ class KafkaPublisherClientSpec : KafkaSpec(
             )
 
             settings = kafkaSettings()
-            publisher = KafkaPublisherClient(settings)
+            publisher = EventPublisherClient(settings)
         }
 
         "Publish two messages to Kafka - messages are received" {

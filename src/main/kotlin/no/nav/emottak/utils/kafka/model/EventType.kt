@@ -1,4 +1,4 @@
-package no.nav.emottak.utils.events.model
+package no.nav.emottak.utils.kafka.model
 
 enum class EventType(val value: Int, val description: String) {
     MESSAGE_RECEIVED_VIA_SMTP(1, "Melding mottatt via SMTP"),

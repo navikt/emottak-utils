@@ -1,4 +1,4 @@
-package no.nav.emottak.utils
+package no.nav.emottak.utils.environment
 
 import java.io.FileInputStream
 
