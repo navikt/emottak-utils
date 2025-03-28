@@ -20,7 +20,7 @@ data class Kafka(
     val eventLoggingProducerActive: Boolean
 )
 
-private fun Kafka.toProperties() = Properties()
+fun Kafka.toProperties() = Properties()
     .apply {
         put(SECURITY_PROTOCOL_CONFIG, securityProtocol.value)
         put(SSL_KEYSTORE_TYPE_CONFIG, keystoreType.value)
