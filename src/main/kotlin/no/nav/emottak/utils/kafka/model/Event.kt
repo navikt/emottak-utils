@@ -1,9 +1,9 @@
-package no.nav.emottak.utils.events.model
+package no.nav.emottak.utils.kafka.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import no.nav.emottak.utils.InstantSerializer
-import no.nav.emottak.utils.UuidSerializer
+import no.nav.emottak.utils.serialization.InstantSerializer
+import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
