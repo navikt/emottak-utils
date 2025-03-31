@@ -1,5 +1,7 @@
 name: "Publish emottak-utils library"
 on:
+  release:
+    types: [published]
   workflow_dispatch:
 jobs:
   build:
