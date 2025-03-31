@@ -35,6 +35,7 @@ publishing {
 dependencies {
     implementation(libs.kotlin.kafka)
     implementation(libs.hoplite.core)
+    implementation(libs.arrow.fx.coroutines)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(kotlin("test"))
     testImplementation(testLibs.bundles.kotest)

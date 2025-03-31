@@ -5,10 +5,12 @@ dependencyResolutionManagement {
         create("libs") {
             version("hoplite", "2.8.2")
             version("kotlin-kafka", "0.4.1")
+            version("arrow-fx-coroutines", "2.0.1")
             version("kotlinx-serialization", "1.8.0")
 
             library("hoplite-core", "com.sksamuel.hoplite", "hoplite-core").versionRef("hoplite")
             library("kotlin-kafka", "io.github.nomisrev", "kotlin-kafka").versionRef("kotlin-kafka")
+            library("arrow-fx-coroutines", "io.arrow-kt", "arrow-fx-coroutines").versionRef("arrow-fx-coroutines")
             library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("kotlinx-serialization")
         }
 
