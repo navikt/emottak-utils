@@ -8,7 +8,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.CoroutineContext
 
-/** Installs a coroutine scope as a resource **/
 suspend fun ResourceScope.coroutineScope(context: CoroutineContext): CoroutineScope {
     val currentContext = currentCoroutineContext()
     val job = currentContext[Job]?.let { Job(it) } ?: Job()
