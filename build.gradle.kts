@@ -12,6 +12,12 @@ tasks {
     }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+    compilerOptions {
+        freeCompilerArgs = listOf("-opt-in=kotlin.ExperimentalStdlibApi,kotlinx.coroutines.InternalCoroutinesApi")
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -35,6 +41,7 @@ publishing {
 dependencies {
     implementation(libs.kotlin.kafka)
     implementation(libs.hoplite.core)
+    implementation(libs.arrow.fx.coroutines)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(kotlin("test"))
     testImplementation(testLibs.bundles.kotest)
