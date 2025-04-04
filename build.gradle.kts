@@ -39,10 +39,12 @@ publishing {
 }
 
 dependencies {
+    implementation(libs.slf4j)
     implementation(libs.kotlin.kafka)
     implementation(libs.hoplite.core)
     implementation(libs.arrow.fx.coroutines)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.vault.java.driver)
     testImplementation(kotlin("test"))
     testImplementation(testLibs.bundles.kotest)
     testImplementation(testLibs.kotest.extensions.testcontainers)
