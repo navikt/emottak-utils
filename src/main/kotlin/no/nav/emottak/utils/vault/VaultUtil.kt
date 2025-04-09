@@ -92,14 +92,29 @@ class VaultUtil private constructor() {
                 logger.info("Got vault resource '$resource' from vault path '$path'")
             } ?: throw RuntimeException("Failed to read vault path resource: $path/$resource")
 
+        /**
+         * For Vault ServiceUser-secrets.
+         * Example of path-value: /serviceuser/data/dev/srv-ebms-payload
+         */
         fun getVaultServiceUser(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
-            val vaultData = instance.client.logical().read(path).data["data"] ?: throw RuntimeException("Failed to read 'data' from Vault (path: '$path')")
-            logger.info("Got vault resource 'data' from vault path '$path'")
+            val vaultData = readVaultPathData(path)["data"] ?: throw RuntimeException("Failed to read 'data' from Vault (path: '$path')")
             val vaultJson = Json.parseToJsonElement(vaultData).jsonObject
             val username = vaultJson["username"] ?: throw RuntimeException("Failed to read 'data.username' from Vault (path: '$path')")
             val password = vaultJson["password"] ?: throw RuntimeException("Failed to read 'data.password' from Vault (path: '$path')")
             return VaultUser(username.jsonPrimitive.content, password.jsonPrimitive.content)
+        }
+
+        /**
+         * For Vault Credential-secrets.
+         * Example of path-value: /oracle/data/dev/creds/emottak_q1-nmt3
+         */
+        fun getVaultCredential(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
+            val path = getEnvVar(envVarVaultPath, defaultVaultPath)
+            val vaultData = readVaultPathData(path)
+            val username = vaultData["username"] ?: throw RuntimeException("Failed to read 'username' from Vault (path: '$path')")
+            val password = vaultData["password"] ?: throw RuntimeException("Failed to read 'password' from Vault (path: '$path')")
+            return VaultUser(username, password)
         }
 
         // We should refresh tokens from Vault before they expire, so we add a MIN_REFRESH_MARGIN margin.
