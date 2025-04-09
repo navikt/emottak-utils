@@ -94,7 +94,12 @@ class VaultUtil private constructor() {
 
         /**
          * For Vault ServiceUser-secrets.
-         * Example of path-value: /serviceuser/data/dev/srv-ebms-payload
+         *
+         * Example of vault-path to lookup with this method:
+         * /serviceuser/data/dev/srv-ebms-payload
+         *
+         * @property envVarVaultPath The name of Environment variable.
+         * @property defaultVaultPath Default-value if Environment variable is not found.
          */
         fun getVaultServiceUser(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
@@ -107,7 +112,12 @@ class VaultUtil private constructor() {
 
         /**
          * For Vault Credential-secrets.
-         * Example of path-value: /oracle/data/dev/creds/emottak_q1-nmt3
+         *
+         * Example of vault-path to lookup with this method:
+         * /oracle/data/dev/creds/emottak_q1-nmt3
+         *
+         * @property envVarVaultPath The name of Environment variable.
+         * @property defaultVaultPath Default-value if Environment variable is not found.
          */
         fun getVaultCredential(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
