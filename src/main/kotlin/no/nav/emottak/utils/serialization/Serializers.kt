@@ -8,11 +8,9 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import no.nav.emottak.utils.kafka.model.EventAdditionalData
 import java.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 // Inspirert av: https://stackoverflow.com/questions/65398284/kotlin-serialization-serializer-has-not-been-found-for-type-uuid
-@OptIn(ExperimentalUuidApi::class)
 object UuidSerializer : KSerializer<Uuid> {
     override val descriptor = PrimitiveSerialDescriptor("Uuid", PrimitiveKind.STRING)
     override fun deserialize(decoder: Decoder) = Uuid.parse(decoder.decodeString())

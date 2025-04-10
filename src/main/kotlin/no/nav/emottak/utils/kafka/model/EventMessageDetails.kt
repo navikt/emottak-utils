@@ -5,10 +5,8 @@ import kotlinx.serialization.json.Json
 import no.nav.emottak.utils.serialization.InstantSerializer
 import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class EventMessageDetails(
     @Serializable(with = UuidSerializer::class)

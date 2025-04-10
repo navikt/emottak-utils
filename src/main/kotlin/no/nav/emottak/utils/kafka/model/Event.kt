@@ -7,10 +7,8 @@ import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class Event(
     val eventType: EventType,
