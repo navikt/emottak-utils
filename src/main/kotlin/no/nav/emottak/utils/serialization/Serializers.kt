@@ -5,6 +5,8 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import no.nav.emottak.utils.kafka.model.EventAdditionalData
 import java.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -26,4 +28,14 @@ object InstantSerializer : KSerializer<Instant> {
 
 fun Exception.toJsonString(): String {
     return "{\"ExceptionClass\":\"${this.javaClass.name}\", \"message\":\"${this.message}\", \"causeMessage\":\"${this.cause?.message}\"}"
+}
+
+fun Exception.getErrorMessage(): String {
+    return localizedMessage ?: cause?.message ?: javaClass.simpleName
+}
+
+fun Exception.toEventDataJson(): String {
+    return Json.encodeToString(
+        mapOf(EventAdditionalData.ERROR_MESSAGE.value to this.getErrorMessage())
+    )
 }
