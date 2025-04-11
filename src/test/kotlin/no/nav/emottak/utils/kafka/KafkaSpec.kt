@@ -18,7 +18,6 @@ import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.utility.DockerImageName
 import java.util.Properties
 import kotlin.time.Duration.Companion.seconds
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 abstract class KafkaSpec(body: KafkaSpec.() -> Unit = {}) : StringSpec() {
@@ -52,7 +51,6 @@ abstract class KafkaSpec(body: KafkaSpec.() -> Unit = {}) : StringSpec() {
             )
         )
 
-    @OptIn(ExperimentalUuidApi::class)
     private fun adminProperties(): Properties = Properties().apply {
         put(BOOTSTRAP_SERVERS_CONFIG, container.bootstrapServers)
         put(CLIENT_ID_CONFIG, "test-kafka-admin-client-${Uuid.random()}")
