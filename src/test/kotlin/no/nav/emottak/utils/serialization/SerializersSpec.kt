@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 
-class SerializersTest : StringSpec({
+class SerializersSpec : StringSpec({
     "Exception.toJsonString() should return a valid JSON string" {
         val exception = IllegalArgumentException("Test exception message")
 
