@@ -1,4 +1,4 @@
-package no.nav.emottak.utils
+package no.nav.emottak.utils.common
 
 import arrow.core.raise.catch
 import kotlin.uuid.Uuid
