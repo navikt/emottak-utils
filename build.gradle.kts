@@ -10,11 +10,14 @@ tasks {
     ktlintFormat {
         this.enabled = true
     }
+    test {
+        useJUnitPlatform()
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
     compilerOptions {
-        freeCompilerArgs = listOf("-opt-in=kotlin.ExperimentalStdlibApi,kotlinx.coroutines.InternalCoroutinesApi")
+        freeCompilerArgs = listOf("-opt-in=kotlin.ExperimentalStdlibApi,kotlinx.coroutines.InternalCoroutinesApi,kotlin.uuid.ExperimentalUuidApi")
     }
 }
 
