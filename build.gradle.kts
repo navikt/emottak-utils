@@ -10,6 +10,9 @@ tasks {
     ktlintFormat {
         this.enabled = true
     }
+    test {
+        useJUnitPlatform()
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
