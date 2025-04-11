@@ -1,6 +1,6 @@
 package no.nav.emottak.utils.kafka.model
 
-enum class EventAdditionalData(val value: String) {
+enum class EventDataType(val value: String) {
     ERROR_MESSAGE("error_message"),
     MESSAGE_ID("message_id"),
     CPA_ID("cpa_id"),
@@ -14,7 +14,7 @@ enum class EventAdditionalData(val value: String) {
     }
 
     companion object {
-        fun fromValue(value: String): EventAdditionalData? {
+        fun fromValue(value: String): EventDataType? {
             return values().find { it.value == value }
         }
     }

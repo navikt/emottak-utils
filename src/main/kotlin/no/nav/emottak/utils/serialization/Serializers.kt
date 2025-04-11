@@ -6,7 +6,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
-import no.nav.emottak.utils.kafka.model.EventAdditionalData
+import no.nav.emottak.utils.kafka.model.EventDataType
 import java.time.Instant
 import kotlin.uuid.Uuid
 
@@ -34,6 +34,6 @@ fun Exception.getErrorMessage(): String {
 
 fun Exception.toEventDataJson(): String {
     return Json.encodeToString(
-        mapOf(EventAdditionalData.ERROR_MESSAGE.value to this.getErrorMessage())
+        mapOf(EventDataType.ERROR_MESSAGE.value to this.getErrorMessage())
     )
 }

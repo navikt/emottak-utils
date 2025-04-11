@@ -1,9 +1,6 @@
 package no.nav.emottak.utils
 
+import arrow.core.raise.catch
 import kotlin.uuid.Uuid
 
-fun String.parseOrGenerateUuid(): Uuid = try {
-    Uuid.parse(this)
-} catch (e: IllegalArgumentException) {
-    Uuid.random()
-}
+fun String.parseOrGenerateUuid(): Uuid = catch({ Uuid.parse(this) }) { Uuid.random() }
