@@ -1,7 +1,6 @@
 package no.nav.emottak.utils.kafka.model
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import no.nav.emottak.utils.serialization.InstantSerializer
 import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
@@ -27,6 +26,6 @@ data class EventMessageDetails(
     val sentAt: Instant? = null
 ) {
     fun toByteArray(): ByteArray {
-        return Json.encodeToString(this).toByteArray()
+        return jsonWithDefaults.encodeToString(this).toByteArray()
     }
 }

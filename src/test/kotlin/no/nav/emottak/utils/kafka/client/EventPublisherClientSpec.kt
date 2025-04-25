@@ -59,25 +59,18 @@ class EventPublisherClientSpec : KafkaSpec(
 
                 consumer.test {
                     val (_, firstValue) = awaitItem()
-                    val firstEventJson = firstValue.decodeToString()
-                    val firstEvent = Json.decodeFromString<Event>(firstEventJson)
-
-                    firstEvent shouldBe firstPublishedEvent
+                    compareEvents(firstPublishedEvent, firstValue)
 
                     val (_, secondValue) = awaitItem()
-                    val lastEventJson = secondValue.decodeToString()
-                    val lastEvent = Json.decodeFromString<Event>(lastEventJson)
-
-                    lastEvent shouldBe lastPublishedEvent
+                    compareEvents(lastPublishedEvent, secondValue)
                 }
             }
         }
 
         "Publish one message to Kafka - message is received" {
             turbineScope {
-                val publishedEvent = randomEvent("Event 3")
-
-                publisher.publishMessage(publishedEvent.toByteArray())
+                val event = randomEvent("Event 3")
+                publisher.publishMessage(event.toByteArray())
 
                 val receiver = KafkaReceiver(receiverSettings())
                 val consumer = receiver.receive(settings.topic)
@@ -88,10 +81,7 @@ class EventPublisherClientSpec : KafkaSpec(
                     val (_, _) = awaitItem()
 
                     val (_, value) = awaitItem()
-                    val eventJson = value.decodeToString()
-                    val event = Json.decodeFromString<Event>(eventJson)
-
-                    event shouldBe publishedEvent
+                    compareEvents(event, value)
                 }
             }
         }
@@ -105,3 +95,9 @@ private fun randomEvent(eventData: String): Event = Event(
     messageId = "messageId",
     eventData = eventData
 )
+
+private fun compareEvents(event: Event, receivedValue: ByteArray) {
+    val eventJson = receivedValue.decodeToString()
+    val receivedEvent = Json.decodeFromString<Event>(eventJson)
+    receivedEvent shouldBe event
+}
