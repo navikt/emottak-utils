@@ -21,6 +21,8 @@ data class Event(
     val createdAt: Instant = ZonedDateTime.now(ZoneId.of("Europe/Oslo")).toInstant()
 ) {
     fun toByteArray(): ByteArray {
-        return Json.encodeToString(this).toByteArray()
+        return jsonWithDefaults.encodeToString(this).toByteArray()
     }
 }
+
+val jsonWithDefaults = Json { encodeDefaults = true }
