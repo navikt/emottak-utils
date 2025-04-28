@@ -27,7 +27,13 @@ class VaultUtil private constructor() {
                 .token(vaultToken)
                 .openTimeout(5)
                 .readTimeout(30)
-                .sslConfig(SslConfig().build())
+                .also {
+                    if (IS_MOCKED) {
+                        it.sslConfig(SslConfig().verify(false).build())
+                    } else {
+                        it.sslConfig(SslConfig().build())
+                    }
+                }
                 .build()
         } catch (e: VaultException) {
             throw RuntimeException("Could not instantiate the Vault REST client", e)
@@ -78,28 +84,59 @@ class VaultUtil private constructor() {
         private const val VAULT_TOKEN_PATH_PROPERTY: String = "VAULT_TOKEN_PATH"
         private const val MIN_REFRESH_MARGIN: Int = 10 * 60 * 1000 // 10 min in ms;
 
-        private val instance: VaultUtil = VaultUtil()
+        private val instance: VaultUtil by lazy { VaultUtil() }
+
+        private var IS_MOCKED = false
+        fun setAsMocked() {
+            println("VAULT is marked as mocked - SSL verification disabled")
+            IS_MOCKED = true
+        }
 
         fun getClient() = instance.client
 
         fun readVaultPathData(path: String): Map<String, String> =
-            instance.client.logical().read(path).data.also {
+            getClient().logical().read(path).data.also {
                 logger.info("Looked up vault path '$path'")
             } ?: throw RuntimeException("Failed to read vault path '$path'")
 
         fun readVaultPathResource(path: String, resource: String): String =
             readVaultPathData(path)[resource].also {
                 logger.info("Got vault resource '$resource' from vault path '$path'")
-            } ?: throw RuntimeException("Failed to read vault path resource: $path/$resource")
+            } ?: throw RuntimeException("Failed to read vault path resource: '$path/$resource'")
 
+        /**
+         * For Vault ServiceUser-secrets.
+         *
+         * Example of vault-path to lookup with this method:
+         * /serviceuser/data/dev/srv-ebms-payload
+         *
+         * @property envVarVaultPath The name of Environment variable.
+         * @property defaultVaultPath Default-value if Environment variable is not found.
+         */
         fun getVaultServiceUser(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
-            val vaultData = instance.client.logical().read(path).data["data"] ?: throw RuntimeException("Failed to read 'data' from Vault (path: '$path')")
-            logger.info("Got vault resource 'data' from vault path '$path'")
-            val vaultJson = Json.parseToJsonElement(vaultData).jsonObject
-            val username = vaultJson["username"] ?: throw RuntimeException("Failed to read 'data.username' from Vault (path: '$path')")
-            val password = vaultJson["password"] ?: throw RuntimeException("Failed to read 'data.password' from Vault (path: '$path')")
+            val vaultData = readVaultPathData(path)["data"] ?: throw RuntimeException("Failed to read 'data' from Vault (path: '$path')")
+            val jsonData = Json.parseToJsonElement(vaultData).jsonObject
+            val username = jsonData["username"] ?: throw RuntimeException("Failed to read 'data.username' from Vault (path: '$path')")
+            val password = jsonData["password"] ?: throw RuntimeException("Failed to read 'data.password' from Vault (path: '$path')")
             return VaultUser(username.jsonPrimitive.content, password.jsonPrimitive.content)
+        }
+
+        /**
+         * For Vault Credential-secrets.
+         *
+         * Example of vault-path to lookup with this method:
+         * /oracle/data/dev/creds/emottak_q1-nmt3
+         *
+         * @property envVarVaultPath The name of Environment variable.
+         * @property defaultVaultPath Default-value if Environment variable is not found.
+         */
+        fun getVaultCredential(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
+            val path = getEnvVar(envVarVaultPath, defaultVaultPath)
+            val vaultData = readVaultPathData(path)
+            val username = vaultData["username"] ?: throw RuntimeException("Failed to read 'username' from Vault (path: '$path')")
+            val password = vaultData["password"] ?: throw RuntimeException("Failed to read 'password' from Vault (path: '$path')")
+            return VaultUser(username, password)
         }
 
         // We should refresh tokens from Vault before they expire, so we add a MIN_REFRESH_MARGIN margin.
