@@ -9,11 +9,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import no.nav.emottak.utils.mocks.vault.VaultMock
 import no.nav.emottak.utils.mocks.vault.VaultTestUtils
-import org.eclipse.jetty.server.Server
 
 class VaultUtilSpec : StringSpec(
     {
-        lateinit var server: Server
         val mockPort = 9998
         val vaultAddress = "https://127.0.0.1:$mockPort"
         val serviceuserVaultPath = "serviceuser/data/dev/srv-ebms-payload"
@@ -28,14 +26,14 @@ class VaultUtilSpec : StringSpec(
                 serviceuserVaultPath to "{\"data\": {\"data\": {\"username\":\"srv-ebms-payload\", \"password\":\"srv-ebms-payload-password\"}}}",
                 credentialVaultPath to "{\"data\": {\"username\":\"testuser\", \"password\":\"my_password\"}}"
             )
-            server = VaultTestUtils.initHttpsVaultMock(VaultMock(200, responses), mockPort)
             VaultUtil.setAsMocked()
-            server.start()
+            VaultTestUtils.initHttpsVaultMock(VaultMock(200, responses), mockPort)
+            VaultTestUtils.start()
         }
 
         afterSpec {
             println("=== Stopping VaultMock ===")
-            VaultTestUtils.shutdownVaultMock(server)
+            VaultTestUtils.shutdownVaultMock()
         }
 
         "Should retreive requested path from Vault" {
