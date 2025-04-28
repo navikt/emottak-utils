@@ -73,7 +73,7 @@ class VaultUtilSpec : StringSpec(
                 System.setProperty("NON_EXISTING_VAULT_PATH", "this/path/does/not/exist")
                 VaultUtil.getVaultCredential("NON_EXISTING_VAULT_PATH", "default/path")
             }
-            exception.message shouldBe "Failed to read 'username' from Vault (path: 'this/path/does/not/exist')"
+            exception.message shouldBe "Failed to read 'username' from Vault (path: 'this/path/does/not/exist'). Available keys: []"
         }
 
         "Should throw RuntimeException when requested resource not found" {
