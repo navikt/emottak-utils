@@ -47,7 +47,7 @@ dependencies {
     implementation(libs.hoplite.core)
     implementation(libs.arrow.fx.coroutines)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.vault.java.driver)
+    api(libs.vault.java.driver)
     testImplementation(kotlin("test"))
     testImplementation(testLibs.bundles.kotest)
     testImplementation(testLibs.kotest.extensions.testcontainers)
