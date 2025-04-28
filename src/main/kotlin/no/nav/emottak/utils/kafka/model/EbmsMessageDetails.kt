@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 import kotlin.uuid.Uuid
 
 @Serializable
-data class MessageDetails(
+data class EbmsMessageDetails(
     @Serializable(with = UuidSerializer::class)
     val requestId: Uuid,
     val cpaId: String,
