@@ -27,7 +27,7 @@ data class EbmsMessageDetails(
     @Serializable(with = InstantSerializer::class)
     val sentAt: Instant? = null,
     @Serializable(with = InstantSerializer::class)
-    val savedAt: Instant? = ZonedDateTime.now(ZoneId.of("Europe/Oslo")).toInstant()
+    val savedAt: Instant = ZonedDateTime.now(ZoneId.of("Europe/Oslo")).toInstant()
 ) {
     fun toByteArray(): ByteArray {
         return jsonWithDefaults.encodeToString(this).toByteArray()
