@@ -16,8 +16,10 @@ import java.io.IOException
 import java.util.Optional
 
 object VaultTestUtils {
-    fun initHttpsVaultMock(mock: VaultMock, port: Int = 9998): Server {
-        val server = Server()
+    private lateinit var server: Server
+
+    fun initHttpsVaultMock(mock: VaultMock, port: Int = 9998) {
+        server = Server()
         val sslContextFactory: SslContextFactory.Server = SslContextFactory.Server()
         sslContextFactory.keyStorePath = VaultTestUtils::class.java.classLoader
             .getResource("vault/keystore.jks")!!.toExternalForm()
@@ -34,11 +36,13 @@ object VaultTestUtils {
         server.connectors = arrayOf<Connector>(sslConnector)
 
         server.handler = mock
-        return server
+
+        server.start()
     }
 
     @Throws(Exception::class)
-    fun shutdownVaultMock(server: Server) {
+    fun shutdownVaultMock() {
+        if (!this::server.isInitialized) return
         var attemptCount = 0
         while (!server.isStopped && attemptCount < 5) {
             attemptCount++

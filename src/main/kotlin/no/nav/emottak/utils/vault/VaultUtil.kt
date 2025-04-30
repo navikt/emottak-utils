@@ -117,8 +117,8 @@ class VaultUtil private constructor() {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
             val vaultData = readVaultPathData(path)["data"] ?: throw RuntimeException("Failed to read 'data' from Vault (path: '$path')")
             val jsonData = Json.parseToJsonElement(vaultData).jsonObject
-            val username = jsonData["username"] ?: throw RuntimeException("Failed to read 'data.username' from Vault (path: '$path')")
-            val password = jsonData["password"] ?: throw RuntimeException("Failed to read 'data.password' from Vault (path: '$path')")
+            val username = jsonData["username"] ?: throw RuntimeException("Failed to read 'data.username' from Vault (path: '$path'). Available keys: ${jsonData.keys}")
+            val password = jsonData["password"] ?: throw RuntimeException("Failed to read 'data.password' from Vault (path: '$path'). Available keys: ${jsonData.keys}")
             return VaultUser(username.jsonPrimitive.content, password.jsonPrimitive.content)
         }
 
@@ -134,8 +134,8 @@ class VaultUtil private constructor() {
         fun getVaultCredential(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
             val vaultData = readVaultPathData(path)
-            val username = vaultData["username"] ?: throw RuntimeException("Failed to read 'username' from Vault (path: '$path')")
-            val password = vaultData["password"] ?: throw RuntimeException("Failed to read 'password' from Vault (path: '$path')")
+            val username = vaultData["username"] ?: throw RuntimeException("Failed to read 'username' from Vault (path: '$path'). Available keys: ${vaultData.keys}")
+            val password = vaultData["password"] ?: throw RuntimeException("Failed to read 'password' from Vault (path: '$path'). Available keys: ${vaultData.keys}")
             return VaultUser(username, password)
         }
 
