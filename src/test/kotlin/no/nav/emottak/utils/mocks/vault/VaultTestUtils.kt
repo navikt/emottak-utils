@@ -42,7 +42,7 @@ object VaultTestUtils {
 
     @Throws(Exception::class)
     fun shutdownVaultMock() {
-        if(!this::server.isInitialized) return
+        if (!this::server.isInitialized) return
         var attemptCount = 0
         while (!server.isStopped && attemptCount < 5) {
             attemptCount++
