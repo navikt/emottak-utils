@@ -11,9 +11,9 @@ class EventPublisherClient(
 ) {
     private val kafkaPublisher = KafkaPublisher(config.toKafkaPublisherSettings())
 
-    suspend fun publishMessage(value: ByteArray): Result<RecordMetadata> =
+    suspend fun publishMessage(topic: String, value: ByteArray): Result<RecordMetadata> =
         kafkaPublisher.publishScope {
-            publishCatching(toProducerRecord(config.topic, value))
+            publishCatching(toProducerRecord(topic, value))
         }
 
     private fun toProducerRecord(topic: String, content: ByteArray): ProducerRecord<String, ByteArray> =

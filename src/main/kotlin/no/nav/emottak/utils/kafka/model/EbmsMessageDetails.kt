@@ -4,10 +4,12 @@ import kotlinx.serialization.Serializable
 import no.nav.emottak.utils.serialization.InstantSerializer
 import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.uuid.Uuid
 
 @Serializable
-data class EventMessageDetails(
+data class EbmsMessageDetails(
     @Serializable(with = UuidSerializer::class)
     val requestId: Uuid,
     val cpaId: String,
@@ -23,7 +25,9 @@ data class EventMessageDetails(
     val refParam: String? = null,
     val sender: String? = null,
     @Serializable(with = InstantSerializer::class)
-    val sentAt: Instant? = null
+    val sentAt: Instant? = null,
+    @Serializable(with = InstantSerializer::class)
+    val savedAt: Instant = ZonedDateTime.now(ZoneId.of("Europe/Oslo")).toInstant()
 ) {
     fun toByteArray(): ByteArray {
         return jsonWithDefaults.encodeToString(this).toByteArray()
