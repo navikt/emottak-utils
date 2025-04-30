@@ -28,7 +28,6 @@ class VaultUtilSpec : StringSpec(
             )
             VaultUtil.setAsMocked()
             VaultTestUtils.initHttpsVaultMock(VaultMock(200, responses), mockPort)
-            VaultTestUtils.start()
         }
 
         afterSpec {

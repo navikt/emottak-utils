@@ -36,14 +36,13 @@ object VaultTestUtils {
         server.connectors = arrayOf<Connector>(sslConnector)
 
         server.handler = mock
-    }
 
-    fun start() {
         server.start()
     }
 
     @Throws(Exception::class)
     fun shutdownVaultMock() {
+        if(!this::server.isInitialized) return
         var attemptCount = 0
         while (!server.isStopped && attemptCount < 5) {
             attemptCount++
