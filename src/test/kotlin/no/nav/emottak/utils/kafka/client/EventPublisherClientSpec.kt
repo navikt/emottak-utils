@@ -23,6 +23,7 @@ import kotlin.uuid.Uuid
 
 class EventPublisherClientSpec : KafkaSpec(
     {
+        val testTopic = "test-topic"
         lateinit var settings: Kafka
         lateinit var publisher: EventPublisherClient
 
@@ -36,9 +37,7 @@ class EventPublisherClientSpec : KafkaSpec(
                 truststoreType = TruststoreType(""),
                 truststoreLocation = TruststoreLocation(""),
                 truststorePassword = Masked(""),
-                groupId = "ebms-provider",
-                topic = "test-topic",
-                eventLoggingProducerActive = false
+                groupId = "ebms-provider"
             )
 
             settings = kafkaSettings()
@@ -50,11 +49,11 @@ class EventPublisherClientSpec : KafkaSpec(
                 val firstPublishedEvent = randomEvent("Event 1")
                 val lastPublishedEvent = randomEvent("Event 2")
 
-                publisher.publishMessage(firstPublishedEvent.toByteArray())
-                publisher.publishMessage(lastPublishedEvent.toByteArray())
+                publisher.publishMessage(testTopic, firstPublishedEvent.toByteArray())
+                publisher.publishMessage(testTopic, lastPublishedEvent.toByteArray())
 
                 val receiver = KafkaReceiver(receiverSettings())
-                val consumer = receiver.receive(settings.topic)
+                val consumer = receiver.receive(testTopic)
                     .map { Pair(it.key(), it.value()) }
 
                 consumer.test {
@@ -70,10 +69,10 @@ class EventPublisherClientSpec : KafkaSpec(
         "Publish one message to Kafka - message is received" {
             turbineScope {
                 val event = randomEvent("Event 3")
-                publisher.publishMessage(event.toByteArray())
+                publisher.publishMessage(testTopic, event.toByteArray())
 
                 val receiver = KafkaReceiver(receiverSettings())
-                val consumer = receiver.receive(settings.topic)
+                val consumer = receiver.receive(testTopic)
                     .map { Pair(it.key(), it.value()) }
 
                 consumer.test {

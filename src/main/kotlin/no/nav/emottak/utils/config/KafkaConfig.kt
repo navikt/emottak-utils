@@ -15,8 +15,12 @@ data class Kafka(
     val truststoreType: TruststoreType,
     val truststoreLocation: TruststoreLocation,
     val truststorePassword: Masked,
-    val groupId: String,
-    val topic: String,
+    val groupId: String
+)
+
+data class EventLogging(
+    val eventTopic: String,
+    val messageDetailsTopic: String,
     val eventLoggingProducerActive: Boolean
 )
 
