@@ -7,6 +7,7 @@ import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -16,9 +17,12 @@ data class Event(
     val requestId: Uuid,
     val contentId: String? = null,
     val messageId: String,
-    val eventData: String? = null,
+    val eventData: String? = "{}",
     @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant = ZonedDateTime.now(ZoneId.of("Europe/Oslo")).toInstant()
+    val createdAt: Instant = ZonedDateTime
+        .now(ZoneId.of("Europe/Oslo"))
+        .toInstant()
+        .truncatedTo(ChronoUnit.MICROS)
 ) {
     fun toByteArray(): ByteArray {
         return jsonWithDefaults.encodeToString(this).toByteArray()
