@@ -5,11 +5,13 @@ import com.bettercloud.vault.Vault
 import com.bettercloud.vault.VaultConfig
 import com.bettercloud.vault.VaultException
 import com.bettercloud.vault.response.AuthResponse
+import com.bettercloud.vault.response.LogicalResponse
 import com.bettercloud.vault.response.LookupResponse
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.nav.emottak.utils.environment.getEnvVar
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -95,41 +97,26 @@ class VaultUtil private constructor() {
         fun getClient() = instance.client
 
         fun readVaultPathData(path: String): Map<String, String> =
-            getClient().logical().read(path).data.also {
+            getClient().logical().read(path).extractData(logger).also {
                 logger.info("Looked up vault path '$path'")
             } ?: throw RuntimeException("Failed to read vault path '$path'")
 
-        fun readVaultPathResource(path: String, resource: String): String =
-            readVaultPathData(path)[resource].also {
+        fun readVaultPathResource(path: String, resource: String): String {
+            val vaultData = readVaultPathData(path)
+            return vaultData[resource]?.also {
                 logger.info("Got vault resource '$resource' from vault path '$path'")
-            } ?: throw RuntimeException("Failed to read vault path resource: '$path/$resource'")
-
-        /**
-         * For Vault ServiceUser-secrets.
-         *
-         * Example of vault-path to lookup with this method:
-         * /serviceuser/data/dev/srv-ebms-payload
-         *
-         * @property envVarVaultPath The name of Environment variable.
-         * @property defaultVaultPath Default-value if Environment variable is not found.
-         */
-        fun getVaultServiceUser(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
-            val path = getEnvVar(envVarVaultPath, defaultVaultPath)
-            val vaultData = readVaultPathData(path)["data"] ?: throw RuntimeException("Failed to read 'data' from Vault (path: '$path')")
-            val jsonData = Json.parseToJsonElement(vaultData).jsonObject
-            val username = jsonData["username"] ?: throw RuntimeException("Failed to read 'data.username' from Vault (path: '$path'). Available keys: ${jsonData.keys}")
-            val password = jsonData["password"] ?: throw RuntimeException("Failed to read 'data.password' from Vault (path: '$path'). Available keys: ${jsonData.keys}")
-            return VaultUser(username.jsonPrimitive.content, password.jsonPrimitive.content)
+            } ?: throw RuntimeException("Failed to read vault path resource: '$path/$resource'. Available keys: ${vaultData.keys}")
         }
 
         /**
-         * For Vault Credential-secrets.
+         * For looking up Vault ServiceUser or Credential.
          *
-         * Example of vault-path to lookup with this method:
+         * Examples of Vault-paths to lookup with this method:
+         * /serviceuser/data/dev/srv-ebms-payload
          * /oracle/data/dev/creds/emottak_q1-nmt3
          *
-         * @property envVarVaultPath The name of Environment variable.
-         * @property defaultVaultPath Default-value if Environment variable is not found.
+         * @property envVarVaultPath The name of environment variable that contains a Vault-path.
+         * @property defaultVaultPath Default Vault-path if environment variable is not found.
          */
         fun getVaultCredential(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
@@ -180,3 +167,14 @@ fun String.parseVaultJsonObject(field: String) = Json.parseToJsonElement(
 ).jsonObject[field]!!.jsonPrimitive.content
 
 data class VaultUser(val username: String, val password: String)
+
+private fun LogicalResponse.extractData(logger: Logger): Map<String, String>? =
+    if (this.data != null && this.data.containsKey("data")) {
+        Json.parseToJsonElement(this.data["data"]!!).jsonObject.mapValues { entry ->
+            entry.value.jsonPrimitive.content
+        }.also {
+            logger.info("Extracted 'data' from requested Vault-path.")
+        }
+    } else {
+        this.data
+    }

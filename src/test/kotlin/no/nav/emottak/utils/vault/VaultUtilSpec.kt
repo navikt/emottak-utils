@@ -56,7 +56,7 @@ class VaultUtilSpec : StringSpec(
 
         "Should retreive serviceuser from Vault" {
             System.setProperty("SERVICEUSER_VAULT_PATH", serviceuserVaultPath)
-            val vaultUser = VaultUtil.getVaultServiceUser("SERVICEUSER_VAULT_PATH", "ignored/default/path")
+            val vaultUser = VaultUtil.getVaultCredential("SERVICEUSER_VAULT_PATH", "ignored/default/path")
             vaultUser.username shouldBe "srv-ebms-payload"
             vaultUser.password shouldBe "srv-ebms-payload-password"
         }
@@ -79,7 +79,7 @@ class VaultUtilSpec : StringSpec(
             val exception = shouldThrow<RuntimeException> {
                 VaultUtil.readVaultPathResource(credentialVaultPath, "non-existing-resource")
             }
-            exception.message shouldBe "Failed to read vault path resource: '$credentialVaultPath/non-existing-resource'"
+            exception.message shouldBe "Failed to read vault path resource: '$credentialVaultPath/non-existing-resource'. Available keys: [password, username]"
         }
     }
 )
