@@ -17,7 +17,7 @@ data class Event(
     val requestId: Uuid,
     val contentId: String? = null,
     val messageId: String,
-    val eventData: String? = "{}",
+    val eventData: String = "{}",
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant = ZonedDateTime
         .now(ZoneId.of("Europe/Oslo"))
