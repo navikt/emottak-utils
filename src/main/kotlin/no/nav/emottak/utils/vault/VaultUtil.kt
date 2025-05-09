@@ -97,7 +97,7 @@ class VaultUtil private constructor() {
         fun getClient() = instance.client
 
         fun readVaultPathData(path: String): Map<String, String> =
-            getClient().logical().read(path).extractData(logger).also {
+            getClient().logical().read(path).extractData(logger)?.also {
                 logger.info("Looked up vault path '$path'")
             } ?: throw RuntimeException("Failed to read vault path '$path'")
 
