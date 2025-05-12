@@ -16,6 +16,8 @@ class VaultUtilSpec : StringSpec(
         val vaultAddress = "https://127.0.0.1:$mockPort"
         val serviceuserVaultPath = "serviceuser/data/dev/srv-ebms-payload"
         val credentialVaultPath = "oracle/data/dev/creds/testuser"
+        val dataVaultPath = "oracle/data/dev/test/temp"
+        val dataNullVaultPath = "oracle/data/dev/test/null"
 
         beforeSpec {
             System.setProperty("VAULT_ADDR", vaultAddress)
@@ -24,7 +26,9 @@ class VaultUtilSpec : StringSpec(
             println("=== Initializing VaultMock ===")
             val responses: Map<String, String> = mapOf(
                 serviceuserVaultPath to "{\"data\": {\"data\": {\"username\":\"srv-ebms-payload\", \"password\":\"srv-ebms-payload-password\"}}}",
-                credentialVaultPath to "{\"data\": {\"username\":\"testuser\", \"password\":\"my_password\"}}"
+                credentialVaultPath to "{\"data\": {\"username\":\"testuser\", \"password\":\"my_password\"}}",
+                dataVaultPath to "{\"data\": {\"data\": \"My data\"}}",
+                dataNullVaultPath to "{\"data\": {\"name\":\"My Name\", \"data\": null}}"
             )
             VaultUtil.setAsMocked()
             VaultTestUtils.initHttpsVaultMock(VaultMock(200, responses), mockPort)
@@ -56,7 +60,7 @@ class VaultUtilSpec : StringSpec(
 
         "Should retreive serviceuser from Vault" {
             System.setProperty("SERVICEUSER_VAULT_PATH", serviceuserVaultPath)
-            val vaultUser = VaultUtil.getVaultServiceUser("SERVICEUSER_VAULT_PATH", "ignored/default/path")
+            val vaultUser = VaultUtil.getVaultCredential("SERVICEUSER_VAULT_PATH", "ignored/default/path")
             vaultUser.username shouldBe "srv-ebms-payload"
             vaultUser.password shouldBe "srv-ebms-payload-password"
         }
@@ -65,6 +69,17 @@ class VaultUtilSpec : StringSpec(
             val vaultUser = VaultUtil.getVaultCredential("ENV_NOT_EXIST", credentialVaultPath)
             vaultUser.username shouldBe "testuser"
             vaultUser.password shouldBe "my_password"
+        }
+
+        "Should retreive data from Vault even when it's not a JSON-string" {
+            val data = VaultUtil.readVaultPathResource(dataVaultPath, "data")
+            data shouldBe "My data"
+        }
+
+        "Should retreive data resource from Vault, even when it's null" {
+            val requestedResource = VaultUtil.readVaultPathData(dataNullVaultPath)
+            requestedResource["name"] shouldBe "My Name"
+            requestedResource["data"] shouldBe null
         }
 
         "Should throw RuntimeException when path not found" {
@@ -79,7 +94,7 @@ class VaultUtilSpec : StringSpec(
             val exception = shouldThrow<RuntimeException> {
                 VaultUtil.readVaultPathResource(credentialVaultPath, "non-existing-resource")
             }
-            exception.message shouldBe "Failed to read vault path resource: '$credentialVaultPath/non-existing-resource'"
+            exception.message shouldBe "Failed to read vault path resource: '$credentialVaultPath/non-existing-resource'. Available keys: [password, username]"
         }
     }
 )
