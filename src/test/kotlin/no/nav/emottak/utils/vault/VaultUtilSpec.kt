@@ -17,6 +17,7 @@ class VaultUtilSpec : StringSpec(
         val serviceuserVaultPath = "serviceuser/data/dev/srv-ebms-payload"
         val credentialVaultPath = "oracle/data/dev/creds/testuser"
         val dataVaultPath = "oracle/data/dev/test/temp"
+        val dataNullVaultPath = "oracle/data/dev/test/null"
 
         beforeSpec {
             System.setProperty("VAULT_ADDR", vaultAddress)
@@ -26,7 +27,8 @@ class VaultUtilSpec : StringSpec(
             val responses: Map<String, String> = mapOf(
                 serviceuserVaultPath to "{\"data\": {\"data\": {\"username\":\"srv-ebms-payload\", \"password\":\"srv-ebms-payload-password\"}}}",
                 credentialVaultPath to "{\"data\": {\"username\":\"testuser\", \"password\":\"my_password\"}}",
-                dataVaultPath to "{\"data\": {\"data\": \"My data\"}}"
+                dataVaultPath to "{\"data\": {\"data\": \"My data\"}}",
+                dataNullVaultPath to "{\"data\": {\"name\":\"My Name\", \"data\": null}}"
             )
             VaultUtil.setAsMocked()
             VaultTestUtils.initHttpsVaultMock(VaultMock(200, responses), mockPort)
@@ -72,6 +74,12 @@ class VaultUtilSpec : StringSpec(
         "Should retreive data from Vault even when it's not a JSON-string" {
             val data = VaultUtil.readVaultPathResource(dataVaultPath, "data")
             data shouldBe "My data"
+        }
+
+        "Should retreive data resource from Vault, even when it's null" {
+            val requestedResource = VaultUtil.readVaultPathData(dataNullVaultPath)
+            requestedResource["name"] shouldBe "My Name"
+            requestedResource["data"] shouldBe null
         }
 
         "Should throw RuntimeException when path not found" {
