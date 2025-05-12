@@ -109,7 +109,7 @@ class VaultUtil private constructor() {
         }
 
         /**
-         * For looking up Vault ServiceUser or Credential.
+         * For looking up a Vault ServiceUser or Credential.
          *
          * Examples of Vault-paths to lookup with this method:
          * /serviceuser/data/dev/srv-ebms-payload
@@ -169,7 +169,7 @@ fun String.parseVaultJsonObject(field: String) = Json.parseToJsonElement(
 data class VaultUser(val username: String, val password: String)
 
 private fun LogicalResponse.extractData(logger: Logger): Map<String, String>? =
-    if (this.data != null && this.data.containsKey("data")) {
+    if (this.data != null && this.data.containsKey("data") && this.data["data"] != null && this.data["data"]!!.startsWith("{")) {
         Json.parseToJsonElement(this.data["data"]!!).jsonObject.mapValues { entry ->
             entry.value.jsonPrimitive.content
         }.also {
