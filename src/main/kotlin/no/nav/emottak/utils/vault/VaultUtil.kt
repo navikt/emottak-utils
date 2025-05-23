@@ -166,15 +166,25 @@ fun String.parseVaultJsonObject(field: String) = Json.parseToJsonElement(
     this
 ).jsonObject[field]!!.jsonPrimitive.content
 
+fun String.toJson() =
+    try {
+        Json.parseToJsonElement(this)
+            .jsonObject
+            .mapValues { (_, jsonElement) ->
+                jsonElement.jsonPrimitive.content
+            }
+    } catch (e: Exception) {
+        null
+    }
+
 data class VaultUser(val username: String, val password: String)
 
-private fun LogicalResponse.extractData(logger: Logger): Map<String, String>? =
-    if (this.data != null && this.data.containsKey("data") && this.data["data"] != null && this.data["data"]!!.startsWith("{")) {
-        Json.parseToJsonElement(this.data["data"]!!).jsonObject.mapValues { entry ->
-            entry.value.jsonPrimitive.content
-        }.also {
-            logger.info("Extracted 'data' from requested Vault-path.")
-        }
-    } else {
-        this.data
+private fun LogicalResponse.extractData(logger: Logger): Map<String, String>? {
+    val rawData: String? = this.data?.get("data")
+    val jsonData = rawData?.toJson()
+    if (jsonData != null) {
+        logger.info("Extracted 'data' from requested Vault-path.")
+        return jsonData
     }
+    return this.data
+}

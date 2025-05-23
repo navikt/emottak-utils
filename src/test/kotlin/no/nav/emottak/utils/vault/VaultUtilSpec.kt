@@ -18,6 +18,7 @@ class VaultUtilSpec : StringSpec(
         val credentialVaultPath = "oracle/data/dev/creds/testuser"
         val dataVaultPath = "oracle/data/dev/test/temp"
         val dataNullVaultPath = "oracle/data/dev/test/null"
+        val dataBracesVaultPath = "oracle/data/dev/test/braces"
 
         beforeSpec {
             System.setProperty("VAULT_ADDR", vaultAddress)
@@ -28,7 +29,8 @@ class VaultUtilSpec : StringSpec(
                 serviceuserVaultPath to "{\"data\": {\"data\": {\"username\":\"srv-ebms-payload\", \"password\":\"srv-ebms-payload-password\"}}}",
                 credentialVaultPath to "{\"data\": {\"username\":\"testuser\", \"password\":\"my_password\"}}",
                 dataVaultPath to "{\"data\": {\"data\": \"My data\"}}",
-                dataNullVaultPath to "{\"data\": {\"name\":\"My Name\", \"data\": null}}"
+                dataNullVaultPath to "{\"data\": {\"name\":\"My Name\", \"data\": null}}",
+                dataBracesVaultPath to "{\"data\": {\"data\": \"{ Hello World }\"}}"
             )
             VaultUtil.setAsMocked()
             VaultTestUtils.initHttpsVaultMock(VaultMock(200, responses), mockPort)
@@ -80,6 +82,11 @@ class VaultUtilSpec : StringSpec(
             val requestedResource = VaultUtil.readVaultPathData(dataNullVaultPath)
             requestedResource["name"] shouldBe "My Name"
             requestedResource["data"] shouldBe null
+        }
+
+        "Should retreive data with braces from Vault as a String when it's not a valid JSON" {
+            val data = VaultUtil.readVaultPathResource(dataBracesVaultPath, "data")
+            data shouldBe "{ Hello World }"
         }
 
         "Should throw RuntimeException when path not found" {
