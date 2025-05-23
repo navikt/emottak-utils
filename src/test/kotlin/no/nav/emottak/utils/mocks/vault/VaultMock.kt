@@ -25,7 +25,7 @@ import java.util.Optional
  * server.start()
  *
  * val vaultConfig = VaultConfig().address("http://127.0.0.1:8999").token("mock_token").build()
- * val vault = Vault(vaultConfig)
+ * val vault = Vault(vaultConfig, 1)
  * val response = vault.logical().read("oracle/data/dev/creds/testuser")
  *
  * response.restResponse.status shouldBe 200
@@ -57,7 +57,7 @@ class VaultMock : AbstractHandler {
         baseRequest!!.isHandled = true
         resp!!.status = mockStatus
         resp.contentType = "application/json"
-        val path = req.pathInfo.split("/v1/")[1]
+        val path = req.pathInfo.split("/v1/").last()
 
         if (path == "auth/token/lookup-self") {
             resp.status = 200
