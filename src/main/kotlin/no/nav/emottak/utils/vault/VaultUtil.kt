@@ -108,16 +108,6 @@ class VaultUtil private constructor() {
             } ?: throw RuntimeException("Failed to read vault path resource: '$path/$resource'. Available keys: ${vaultData.keys}")
         }
 
-        /**
-         * For looking up a Vault ServiceUser or Credential.
-         *
-         * Examples of Vault-paths to lookup with this method:
-         * /serviceuser/data/dev/srv-ebms-payload
-         * /oracle/data/dev/creds/emottak_q1-nmt3
-         *
-         * @property envVarVaultPath The name of environment variable that contains a Vault-path.
-         * @property defaultVaultPath Default Vault-path if environment variable is not found.
-         */
         fun getVaultCredential(envVarVaultPath: String, defaultVaultPath: String): VaultUser {
             val path = getEnvVar(envVarVaultPath, defaultVaultPath)
             val vaultData = readVaultPathData(path)
@@ -166,7 +156,7 @@ fun String.parseVaultJsonObject(field: String) = Json.parseToJsonElement(
     this
 ).jsonObject[field]!!.jsonPrimitive.content
 
-fun String.toJson() =
+fun String.toStringMap() =
     try {
         Json.parseToJsonElement(this)
             .jsonObject
@@ -181,7 +171,7 @@ data class VaultUser(val username: String, val password: String)
 
 private fun LogicalResponse.extractData(logger: Logger): Map<String, String>? {
     val rawData: String? = this.data?.get("data")
-    val jsonData = rawData?.toJson()
+    val jsonData = rawData?.toStringMap()
     if (jsonData != null) {
         logger.info("Extracted 'data' from requested Vault-path.")
         return jsonData
