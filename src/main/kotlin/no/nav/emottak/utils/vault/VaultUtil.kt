@@ -163,7 +163,7 @@ fun String.toStringMap() =
             .mapValues { (_, jsonElement) ->
                 jsonElement.jsonPrimitive.content
             }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 
