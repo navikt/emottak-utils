@@ -9,12 +9,8 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.uuid.Uuid
 
-@Deprecated(
-    "Use EbmsMessageDetail instead",
-    ReplaceWith("EbmsMessageDetail", "no.nav.emottak.utils.kafka.model.EbmsMessageDetail")
-)
 @Serializable
-data class EbmsMessageDetails(
+data class EbmsMessageDetail(
     @Serializable(with = UuidSerializer::class)
     val requestId: Uuid,
     val cpaId: String,
