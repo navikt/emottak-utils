@@ -2,6 +2,11 @@ package no.nav.emottak.utils.common.model
 
 import kotlinx.serialization.Serializable
 
+/* Domenemodell brukt mellom:
+    - ebxml-processor.ebms-provider
+    - emottak-event-manager
+ */
+
 @Serializable
 data class DuplicateCheckRequest(
     val requestId: String,
