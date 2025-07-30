@@ -5,7 +5,7 @@ object LogFields {
     const val CONVERSATION_ID = "conversationId"
     const val FROM_PARTY = "avsenderId"
     const val TO_PARTY = "mottakerId"
-    const val TO_ROLE = "role"
+    const val TO_ROLE = "toRole"
     const val FROM_ROLE = "fromRole"
     const val SERVICE = "service"
     const val CPA_ID = "cpaId"
