@@ -13,6 +13,7 @@ import kotlin.uuid.Uuid
 data class EbmsMessageDetail(
     @Serializable(with = UuidSerializer::class)
     val requestId: Uuid,
+    val mottakId: String? = null,
     val cpaId: String,
     val conversationId: String,
     val messageId: String,
