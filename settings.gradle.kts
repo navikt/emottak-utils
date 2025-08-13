@@ -8,6 +8,7 @@ dependencyResolutionManagement {
             version("kotlin-kafka", "0.4.1")
             version("arrow-fx-coroutines", "2.0.1")
             version("kotlinx-serialization", "1.8.0")
+            version("sqldelight-primitive-adapters", "2.0.2")
             version("vault", "5.1.0")
 
             library("slf4j", "org.slf4j", "slf4j-api").versionRef("slf4j")
@@ -15,6 +16,7 @@ dependencyResolutionManagement {
             library("kotlin-kafka", "io.github.nomisrev", "kotlin-kafka").versionRef("kotlin-kafka")
             library("arrow-fx-coroutines", "io.arrow-kt", "arrow-fx-coroutines").versionRef("arrow-fx-coroutines")
             library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("kotlinx-serialization")
+            library("sqldelight-primitive-adapters", "app.cash.sqldelight", "primitive-adapters").versionRef("sqldelight-primitive-adapters")
             library("vault-java-driver", "com.bettercloud", "vault-java-driver").versionRef("vault")
         }
 
