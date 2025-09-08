@@ -7,7 +7,8 @@ enum class EventDataType(val value: String) {
     QUEUE_NAME("queue_name"),
     JURIDISK_LOGG_ID("juridisk_logg_id"),
     ENCRYPTION_DETAILS("encryption_details"),
-    REFERENCE("reference");
+    REFERENCE_PARAMETER("reference_parameter"),
+    SENDER_NAME("sender_name");
 
     override fun toString(): String {
         return value
@@ -15,7 +16,7 @@ enum class EventDataType(val value: String) {
 
     companion object {
         fun fromValue(value: String): EventDataType? {
-            return values().find { it.value == value }
+            return entries.find { it.value == value }
         }
     }
 }
