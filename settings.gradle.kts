@@ -10,6 +10,7 @@ dependencyResolutionManagement {
             version("kotlinx-serialization", "1.8.0")
             version("sqldelight-primitive-adapters", "2.0.2")
             version("vault", "5.1.0")
+            version("ktor", "3.1.2")
 
             library("slf4j", "org.slf4j", "slf4j-api").versionRef("slf4j")
             library("hoplite-core", "com.sksamuel.hoplite", "hoplite-core").versionRef("hoplite")
@@ -18,6 +19,7 @@ dependencyResolutionManagement {
             library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("kotlinx-serialization")
             library("sqldelight-primitive-adapters", "app.cash.sqldelight", "primitive-adapters").versionRef("sqldelight-primitive-adapters")
             library("vault-java-driver", "com.bettercloud", "vault-java-driver").versionRef("vault")
+            library("ktor-client-core", "io.ktor", "ktor-client-core").versionRef("ktor")
         }
 
         create("testLibs") {

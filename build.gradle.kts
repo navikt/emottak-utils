@@ -48,7 +48,9 @@ dependencies {
     implementation(libs.arrow.fx.coroutines)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.sqldelight.primitive.adapters)
+    implementation(libs.ktor.client.core)
     api(libs.vault.java.driver)
+
     testImplementation(kotlin("test"))
     testImplementation(testLibs.bundles.kotest)
     testImplementation(testLibs.kotest.extensions.testcontainers)
@@ -56,7 +58,6 @@ dependencies {
     testImplementation(testLibs.testcontainers)
     testImplementation(testLibs.testcontainers.kafka)
     testImplementation(testLibs.turbine)
-
     testImplementation("org.eclipse.jetty:jetty-server:11.0.25")
     testImplementation("commons-io:commons-io:2.18.0")
 }
