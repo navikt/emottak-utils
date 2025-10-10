@@ -1,5 +1,8 @@
 package no.nav.emottak.utils.edi2.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ErrorMessage(
     val error: String?,
     val errorCode: Int,
