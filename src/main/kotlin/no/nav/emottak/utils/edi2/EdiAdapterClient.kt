@@ -21,12 +21,9 @@ import no.nav.emottak.utils.edi2.models.Message
 import no.nav.emottak.utils.edi2.models.PostAppRecRequest
 import no.nav.emottak.utils.edi2.models.PostMessageRequest
 import no.nav.emottak.utils.edi2.models.StatusInfo
-import no.nav.emottak.utils.environment.getEnvVar
 import kotlin.uuid.Uuid
 
-class EdiAdapterClient(clientProvider: () -> HttpClient) {
-    private val ediAdapterUrl = getEnvVar("EDI_ADAPTER_URL", "http://edi-adapter")
-
+class EdiAdapterClient(private val ediAdapterUrl: String) {
     private var httpClient = HttpClient(CIO) {
         expectSuccess = true
         install(ContentNegotiation) {
