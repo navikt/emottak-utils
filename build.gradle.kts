@@ -26,7 +26,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             groupId = "no.nav.emottak"
             artifactId = "emottak-utils"
-            version = "0.3.5.dev2"
+            version = "0.3.5.dev3"
             from(components["java"])
         }
     }
@@ -48,7 +48,7 @@ dependencies {
     implementation(libs.arrow.fx.coroutines)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.sqldelight.primitive.adapters)
-    implementation(libs.ktor.client.core)
+    implementation(libs.bundles.ktor)
     api(libs.vault.java.driver)
 
     testImplementation(kotlin("test"))

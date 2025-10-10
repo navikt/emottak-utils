@@ -20,6 +20,11 @@ dependencyResolutionManagement {
             library("sqldelight-primitive-adapters", "app.cash.sqldelight", "primitive-adapters").versionRef("sqldelight-primitive-adapters")
             library("vault-java-driver", "com.bettercloud", "vault-java-driver").versionRef("vault")
             library("ktor-client-core", "io.ktor", "ktor-client-core").versionRef("ktor")
+            library("ktor-client-cio", "io.ktor", "ktor-client-cio").versionRef("ktor")
+            library("ktor-client-content-negotiation", "io.ktor", "ktor-client-content-negotiation").versionRef("ktor")
+            library("ktor-serialization-json", "io.ktor", "ktor-serialization-kotlinx-json").versionRef("ktor")
+
+            bundle("ktor", listOf("ktor-client-core", "ktor-client-cio", "ktor-client-content-negotiation", "ktor-serialization-json"))
         }
 
         create("testLibs") {

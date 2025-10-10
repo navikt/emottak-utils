@@ -2,6 +2,8 @@ package no.nav.emottak.utils.edi2
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
@@ -10,6 +12,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
 import no.nav.emottak.utils.edi2.models.ApprecInfo
 import no.nav.emottak.utils.edi2.models.ErrorMessage
 import no.nav.emottak.utils.edi2.models.GetBusinessDocumentResponse
@@ -22,8 +25,14 @@ import no.nav.emottak.utils.environment.getEnvVar
 import kotlin.uuid.Uuid
 
 class EdiAdapterClient(clientProvider: () -> HttpClient) {
-    private var httpClient = clientProvider.invoke()
     private val ediAdapterUrl = getEnvVar("EDI_ADAPTER_URL", "http://edi-adapter")
+
+    private var httpClient = HttpClient(CIO) {
+        expectSuccess = true
+        install(ContentNegotiation) {
+            json()
+        }
+    }
 
     suspend fun getApprecInfo(id: Uuid): Pair<List<ApprecInfo>?, ErrorMessage?> {
         val response = httpClient.get("$ediAdapterUrl/api/messages/$id/apprec") {
