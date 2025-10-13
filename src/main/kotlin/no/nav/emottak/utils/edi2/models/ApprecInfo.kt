@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApprecInfo(
     val receiverHerId: Int,
-    val appRecStatus: AppRecStatus?,
-    val appRecErrorList: List<AppRecError>?
+    val appRecStatus: AppRecStatus? = null,
+    val appRecErrorList: List<AppRecError>? = null
 )

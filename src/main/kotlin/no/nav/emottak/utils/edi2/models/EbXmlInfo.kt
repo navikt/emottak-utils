@@ -4,17 +4,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EbXmlInfo(
-    val cpaId: String?,
-    val conversationId: String?,
-    val service: String?,
-    val serviceType: String?,
-    val action: String?,
-    val senderRole: String?,
-    val useSenderLevel1HerId: Boolean?,
-    val receiverRole: String?,
-    val applicationName: String?,
-    val applicationVersion: String?,
-    val middlewareName: String?,
-    val middlewareVersion: String?,
-    val compressPayload: Boolean?
+    val cpaId: String? = null,
+    val conversationId: String? = null,
+    val service: String? = null,
+    val serviceType: String? = null,
+    val action: String? = null,
+    val senderRole: String? = null,
+    val useSenderLevel1HerId: Boolean? = null,
+    val receiverRole: String? = null,
+    val applicationName: String? = null,
+    val applicationVersion: String? = null,
+    val middlewareName: String? = null,
+    val middlewareVersion: String? = null,
+    val compressPayload: Boolean? = null
 )

@@ -8,5 +8,5 @@ data class PostMessageRequest(
     val contentType: String,
     val contentTransferEncoding: String,
     val ebXmlOverrides: EbXmlInfo,
-    val receiverHerIdsSubset: List<Int>?
+    val receiverHerIdsSubset: List<Int>? = null
 )

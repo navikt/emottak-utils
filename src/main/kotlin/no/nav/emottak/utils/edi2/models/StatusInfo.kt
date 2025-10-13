@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class StatusInfo(
     val receiverHerId: Int,
     val transportDeliveryState: DeliveryState,
-    val appRecStatus: AppRecStatus?
+    val appRecStatus: AppRecStatus? = null
 )

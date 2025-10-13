@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AppRecError(
-    val errorCode: String?,
-    val details: String?,
-    val description: String?,
-    val oid: String?
+    val errorCode: String? = null,
+    val details: String? = null,
+    val description: String? = null,
+    val oid: String? = null
 )

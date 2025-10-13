@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ErrorMessage(
-    val error: String?,
+    val error: String? = null,
     val errorCode: Int,
-    val validationErrors: List<String>?,
-    val stackTrace: String?,
+    val validationErrors: List<String>? = null,
+    val stackTrace: String? = null,
     val requestId: String
 )
