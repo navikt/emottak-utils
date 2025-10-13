@@ -45,7 +45,7 @@ class EdiAdapterClient(private val ediAdapterUrl: String) {
         return handleResponse(response)
     }
 
-    suspend fun postMessages(postMessagesRequest: PostMessageRequest): Pair<String?, ErrorMessage?> {
+    suspend fun postMessage(postMessagesRequest: PostMessageRequest): Pair<String?, ErrorMessage?> {
         val response = httpClient.post("$ediAdapterUrl/api/v1/messages") {
             contentType(ContentType.Application.Json)
             setBody(postMessagesRequest)
