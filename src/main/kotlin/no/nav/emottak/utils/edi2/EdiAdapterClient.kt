@@ -1,0 +1,103 @@
+package no.nav.emottak.utils.edi2
+
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import no.nav.emottak.utils.edi2.models.ApprecInfo
+import no.nav.emottak.utils.edi2.models.ErrorMessage
+import no.nav.emottak.utils.edi2.models.GetBusinessDocumentResponse
+import no.nav.emottak.utils.edi2.models.GetMessagesRequest
+import no.nav.emottak.utils.edi2.models.Message
+import no.nav.emottak.utils.edi2.models.PostAppRecRequest
+import no.nav.emottak.utils.edi2.models.PostMessageRequest
+import no.nav.emottak.utils.edi2.models.StatusInfo
+import kotlin.uuid.Uuid
+
+class EdiAdapterClient(private val ediAdapterUrl: String) {
+    private var httpClient = HttpClient(CIO) {
+        expectSuccess = true
+        install(ContentNegotiation) {
+            json()
+        }
+    }
+
+    suspend fun getApprecInfo(id: Uuid): Pair<List<ApprecInfo>?, ErrorMessage?> {
+        val response = httpClient.get("$ediAdapterUrl/api/v1/messages/$id/apprec") {
+            contentType(ContentType.Application.Json)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun getMessages(getMessagesRequest: GetMessagesRequest): Pair<List<Message>?, ErrorMessage?> {
+        val response = httpClient.get("$ediAdapterUrl/api/v1/messages?${getMessagesRequest.toUrlParams()}") {
+            contentType(ContentType.Application.Json)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun postMessage(postMessagesRequest: PostMessageRequest): Pair<String?, ErrorMessage?> {
+        val response = httpClient.post("$ediAdapterUrl/api/v1/messages") {
+            contentType(ContentType.Application.Json)
+            setBody(postMessagesRequest)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun getMessage(id: Uuid): Pair<Message?, ErrorMessage?> {
+        val response = httpClient.get("$ediAdapterUrl/api/v1/messages/$id") {
+            contentType(ContentType.Application.Json)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun getBusinessDocument(id: Uuid): Pair<GetBusinessDocumentResponse?, ErrorMessage?> {
+        val response = httpClient.get("$ediAdapterUrl/api/v1/messages/$id/document") {
+            contentType(ContentType.Application.Json)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun getMessageStatus(id: Uuid): Pair<List<StatusInfo>?, ErrorMessage?> {
+        val response = httpClient.get("$ediAdapterUrl/api/v1/messages/$id/status") {
+            contentType(ContentType.Application.Json)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun postApprec(id: Uuid, apprecSenderHerId: Int, postAppRecRequest: PostAppRecRequest): Pair<String?, ErrorMessage?> {
+        val response = httpClient.post("$ediAdapterUrl/api/v1/messages/$id/apprec/$apprecSenderHerId") {
+            contentType(ContentType.Application.Json)
+            setBody(postAppRecRequest)
+        }
+        return handleResponse(response)
+    }
+
+    suspend fun markMessageAsRead(id: Uuid, herId: Int): Pair<Boolean?, ErrorMessage?> {
+        val response = httpClient.put("$ediAdapterUrl/api/v1/messages/$id/read/$herId") {
+            contentType(ContentType.Application.Json)
+        }
+        return if (response.status == HttpStatusCode.NoContent) {
+            Pair(true, null)
+        } else {
+            Pair(null, response.body())
+        }
+    }
+
+    private suspend inline fun <reified T> handleResponse(httpResponse: HttpResponse): Pair<T?, ErrorMessage?> {
+        return if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
+            Pair(httpResponse.body(), null)
+        } else {
+            Pair(null, httpResponse.body())
+        }
+    }
+}
