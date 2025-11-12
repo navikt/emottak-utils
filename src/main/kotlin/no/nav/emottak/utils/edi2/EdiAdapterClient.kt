@@ -116,7 +116,7 @@ class EdiAdapterClient(
     }
 
     private suspend inline fun <reified T> handleResponse(httpResponse: HttpResponse): Pair<T?, ErrorMessage?> {
-        val result: Pair<T?, ErrorMessage?> =  if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
+        val result: Pair<T?, ErrorMessage?> = if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
             Pair(httpResponse.body(), null)
         } else {
             Pair(null, httpResponse.body())
