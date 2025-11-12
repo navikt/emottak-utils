@@ -116,10 +116,12 @@ class EdiAdapterClient(
     }
 
     private suspend inline fun <reified T> handleResponse(httpResponse: HttpResponse): Pair<T?, ErrorMessage?> {
-        return if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
+        val result: Pair<T?, ErrorMessage?> =  if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
             Pair(httpResponse.body(), null)
         } else {
             Pair(null, httpResponse.body())
         }
+        log.debug("EDI2 test: handleResponse result: $result")
+        return result
     }
 }
