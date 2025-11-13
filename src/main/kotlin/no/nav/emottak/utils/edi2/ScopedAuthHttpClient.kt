@@ -24,9 +24,12 @@ fun scopedAuthHttpClient(
 ): () -> HttpClient {
     return {
         HttpClient(CIO) {
-            expectSuccess = true
             install(ContentNegotiation) {
-                json()
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                    }
+                )
             }
             install(Auth) {
                 bearer {

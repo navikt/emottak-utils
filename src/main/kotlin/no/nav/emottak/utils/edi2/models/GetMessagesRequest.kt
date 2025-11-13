@@ -16,21 +16,21 @@ data class GetMessagesRequest(
 
         if (receiverHerIds.isNotEmpty()) {
             receiverHerIds.forEach {
-                params += "ReceiverHerIds=$it"
+                params += "receiverHerIds=$it"
             }
         }
 
         senderHerId?.let {
-            params += "SenderHerId=$it"
+            params += "senderHerId=$it"
         }
 
         businessDocumentId?.let {
-            params += "BusinessDocumentId=$it"
+            params += "businessDocumentId=$it"
         }
 
-        params += "IncludeMetadata=$includeMetadata"
-        params += "MessagesToFetch=$messagesToFetch"
-        params += "OrderBy=${orderBy.name}"
+        params += "includeMetadata=$includeMetadata"
+        params += "messagesToFetch=$messagesToFetch"
+        params += "orderBy=${orderBy.name}"
 
         return params.joinToString("&")
     }

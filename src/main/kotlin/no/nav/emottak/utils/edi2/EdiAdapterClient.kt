@@ -34,9 +34,11 @@ class EdiAdapterClient(
         val response = httpClient.get(url) {
             contentType(ContentType.Application.Json)
         }
-        log.debug("EDI2 test: Response from getApprecInfo: $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from getApprecInfo: $url : ${response.bodyAsText()}, status: ${response.status}")
 
-        return handleResponse(response)
+        val result: Pair<List<ApprecInfo>?, ErrorMessage?> = handleResponse(response)
+        log.info("EDI2 test: getApprecInfo() method returns $result")
+        return result
     }
 
     suspend fun getMessages(getMessagesRequest: GetMessagesRequest): Pair<List<Message>?, ErrorMessage?> {
@@ -44,9 +46,11 @@ class EdiAdapterClient(
         val response = httpClient.get(url) {
             contentType(ContentType.Application.Json)
         }
-        log.debug("EDI2 test: Response from getMessages(): $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from getMessages(): $url : ${response.bodyAsText()} , status: ${response.status}")
 
-        return handleResponse(response)
+        val result: Pair<List<Message>?, ErrorMessage?> = handleResponse(response)
+        log.info("EDI2 test: getMessages() method returns $result")
+        return result
     }
 
     suspend fun postMessage(postMessagesRequest: PostMessageRequest): Pair<String?, ErrorMessage?> {
@@ -55,7 +59,7 @@ class EdiAdapterClient(
             contentType(ContentType.Application.Json)
             setBody(postMessagesRequest)
         }
-        log.debug("EDI2 test: Response from postMessage() : $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from postMessage() : $url : ${response.bodyAsText()}, status: ${response.status}")
 
         return handleResponse(response)
     }
@@ -65,9 +69,11 @@ class EdiAdapterClient(
         val response = httpClient.get(url) {
             contentType(ContentType.Application.Json)
         }
-        log.debug("EDI2 test: Response from getMessage() : $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from getMessage() : $url : ${response.bodyAsText()}, status: ${response.status}")
 
-        return handleResponse(response)
+        val result: Pair<Message?, ErrorMessage?> = handleResponse(response)
+        log.info("EDI2 test: getMessage() method returns $result")
+        return result
     }
 
     suspend fun getBusinessDocument(id: Uuid): Pair<GetBusinessDocumentResponse?, ErrorMessage?> {
@@ -75,7 +81,7 @@ class EdiAdapterClient(
         val response = httpClient.get(url) {
             contentType(ContentType.Application.Json)
         }
-        log.debug("EDI2 test: Response from getBusinessDocument() : $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from getBusinessDocument() : $url : ${response.bodyAsText()}, status: ${response.status}")
 
         return handleResponse(response)
     }
@@ -85,7 +91,7 @@ class EdiAdapterClient(
         val response = httpClient.get(url) {
             contentType(ContentType.Application.Json)
         }
-        log.debug("EDI2 test: Response from getMessageStatus() : $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from getMessageStatus() : $url : ${response.bodyAsText()}, status: ${response.status}")
 
         return handleResponse(response)
     }
@@ -96,7 +102,7 @@ class EdiAdapterClient(
             contentType(ContentType.Application.Json)
             setBody(postAppRecRequest)
         }
-        log.debug("EDI2 test: Response from postApprec() : $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from postApprec() : $url : ${response.bodyAsText()}, status: ${response.status}")
 
         return handleResponse(response)
     }
@@ -106,7 +112,7 @@ class EdiAdapterClient(
         val response = httpClient.put(url) {
             contentType(ContentType.Application.Json)
         }
-        log.debug("EDI2 test: Response from markMessageAsRead() : $url : ${response.bodyAsText()}")
+        log.info("EDI2 test: Response from markMessageAsRead() : $url : ${response.bodyAsText()}, status: ${response.status}")
 
         return if (response.status == HttpStatusCode.NoContent) {
             Pair(true, null)
@@ -116,12 +122,10 @@ class EdiAdapterClient(
     }
 
     private suspend inline fun <reified T> handleResponse(httpResponse: HttpResponse): Pair<T?, ErrorMessage?> {
-        val result: Pair<T?, ErrorMessage?> = if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
+        return if (httpResponse.status == HttpStatusCode.OK || httpResponse.status == HttpStatusCode.Created) {
             Pair(httpResponse.body(), null)
         } else {
             Pair(null, httpResponse.body())
         }
-        log.debug("EDI2 test: handleResponse result: $result")
-        return result
     }
 }
