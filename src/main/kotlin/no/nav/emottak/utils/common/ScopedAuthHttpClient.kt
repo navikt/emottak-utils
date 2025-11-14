@@ -1,4 +1,4 @@
-package no.nav.emottak.utils.edi2
+package no.nav.emottak.utils.common
 
 import com.nimbusds.jwt.SignedJWT
 import io.ktor.client.HttpClient
