@@ -42,7 +42,9 @@ enum class EventType(val value: Int, val description: String) {
     MESSAGE_VALIDATED_AGAINST_XSD(39, "Melding validert mot XSD"),
     VALIDATION_AGAINST_XSD_FAILED(40, "Validering mot XSD mislykket"),
     UNKNOWN_ERROR_OCCURRED(41, "Ukjent feil oppsto!"),
-    REFERENCE_RETRIEVED(42, "Reference hentet");
+    REFERENCE_RETRIEVED(42, "Reference hentet"),
+    MESSAGEFLOW_COMPLETED(43, "Melding ferdigbehandlet"),
+    RETRY_TRIGGED(44, "Melding rekjøres");
 
     companion object {
         fun fromInt(eventCode: Int): EventType {
