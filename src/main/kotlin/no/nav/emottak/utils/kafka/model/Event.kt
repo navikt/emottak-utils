@@ -19,8 +19,7 @@ data class Event(
     val eventData: String = "{}",
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant = nowOsloToInstant()
-        .truncatedTo(ChronoUnit.MICROS),
-    val conversationId: String? = null
+        .truncatedTo(ChronoUnit.MICROS)
 ) {
     fun toByteArray(): ByteArray {
         return jsonWithDefaults.encodeToString(this).toByteArray()
