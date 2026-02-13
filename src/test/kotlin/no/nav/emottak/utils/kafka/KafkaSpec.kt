@@ -14,7 +14,7 @@ import org.apache.kafka.clients.admin.AdminClientConfig.CONNECTIONS_MAX_IDLE_MS_
 import org.apache.kafka.clients.admin.AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
-import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.kafka.KafkaContainer
 import org.testcontainers.utility.DockerImageName
 import java.util.Properties
 import kotlin.time.Duration.Companion.seconds
@@ -29,7 +29,7 @@ abstract class KafkaSpec(body: KafkaSpec.() -> Unit = {}) : StringSpec() {
     private val consumerPollingTimeout = 1.seconds
 
     private val kafkaImage: DockerImageName =
-        DockerImageName.parse("confluentinc/cp-kafka:7.4.0")
+        DockerImageName.parse("confluentinc/cp-kafka:7.5.0")
 
     internal val container: KafkaContainer =
         install(
