@@ -2,11 +2,10 @@ package no.nav.emottak.utils.kafka.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import no.nav.emottak.utils.common.nowOsloToInstant
 import no.nav.emottak.utils.serialization.InstantSerializer
 import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.uuid.Uuid
 
@@ -19,10 +18,9 @@ data class Event(
     val messageId: String,
     val eventData: String = "{}",
     @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant = ZonedDateTime
-        .now(ZoneId.of("Europe/Oslo"))
-        .toInstant()
-        .truncatedTo(ChronoUnit.MICROS)
+    val createdAt: Instant = nowOsloToInstant()
+        .truncatedTo(ChronoUnit.MICROS),
+    val conversationId: String? = null
 ) {
     fun toByteArray(): ByteArray {
         return jsonWithDefaults.encodeToString(this).toByteArray()

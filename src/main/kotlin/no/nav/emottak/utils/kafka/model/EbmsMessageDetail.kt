@@ -1,11 +1,10 @@
 package no.nav.emottak.utils.kafka.model
 
 import kotlinx.serialization.Serializable
+import no.nav.emottak.utils.common.nowOsloToInstant
 import no.nav.emottak.utils.serialization.InstantSerializer
 import no.nav.emottak.utils.serialization.UuidSerializer
 import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.uuid.Uuid
 
@@ -26,9 +25,7 @@ data class EbmsMessageDetail(
     @Serializable(with = InstantSerializer::class)
     val sentAt: Instant? = null,
     @Serializable(with = InstantSerializer::class)
-    val savedAt: Instant = ZonedDateTime
-        .now(ZoneId.of("Europe/Oslo"))
-        .toInstant()
+    val savedAt: Instant = nowOsloToInstant()
         .truncatedTo(ChronoUnit.MICROS)
 ) {
     fun toByteArray(): ByteArray {

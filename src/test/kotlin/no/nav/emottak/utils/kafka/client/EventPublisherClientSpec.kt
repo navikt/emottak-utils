@@ -44,6 +44,10 @@ class EventPublisherClientSpec : KafkaSpec(
             publisher = EventPublisherClient(settings)
         }
 
+        afterSpec {
+            container.close()
+        }
+
         "Publish two messages to Kafka - messages are received" {
             turbineScope {
                 val firstPublishedEvent = randomEvent("Event 1")
@@ -66,9 +70,9 @@ class EventPublisherClientSpec : KafkaSpec(
             }
         }
 
-        "Publish one message to Kafka - message is received" {
+        "Publish one message to Kafka, with conversationId - message is received" {
             turbineScope {
-                val event = randomEvent("Event 3")
+                val event = randomEvent("Event 3", Uuid.random().toString())
                 publisher.publishMessage(testTopic, event.toByteArray())
 
                 val receiver = KafkaReceiver(receiverSettings())
@@ -87,12 +91,13 @@ class EventPublisherClientSpec : KafkaSpec(
     }
 )
 
-private fun randomEvent(eventData: String): Event = Event(
+private fun randomEvent(eventData: String, conversationId: String? = null): Event = Event(
     eventType = EventType.entries.random(),
     requestId = Uuid.random(),
     contentId = "contentId",
     messageId = "messageId",
-    eventData = eventData
+    eventData = eventData,
+    conversationId = conversationId
 )
 
 private fun compareEvents(event: Event, receivedValue: ByteArray) {
