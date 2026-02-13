@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 
         create("testLibs") {
             version("kotest", "5.9.1")
-            version("testcontainers", "1.18.1")
+            version("testcontainers", "1.21.4")
             version("kotest-extensions", "2.0.2")
             version("turbine", "1.2.0")
 
