@@ -10,6 +10,16 @@ import no.nav.emottak.utils.kafka.model.EventDataType
 import java.time.Instant
 import kotlin.uuid.Uuid
 
+val LENIENT_JSON_PARSER = Json {
+    encodeDefaults = true
+    isLenient = true
+    allowSpecialFloatingPointValues = true
+    allowStructuredMapKeys = true
+    prettyPrint = false
+    useArrayPolymorphism = false
+    ignoreUnknownKeys = true
+}
+
 // Inspirert av: https://stackoverflow.com/questions/65398284/kotlin-serialization-serializer-has-not-been-found-for-type-uuid
 object UuidSerializer : KSerializer<Uuid> {
     override val descriptor = PrimitiveSerialDescriptor("Uuid", PrimitiveKind.STRING)
