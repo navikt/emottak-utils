@@ -3,6 +3,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 1.2.3 or v1.2.3)"
+        required: false
+        default: ""
 jobs:
   build:
     name: "build"
@@ -17,6 +22,11 @@ jobs:
       with:
         "java-version": "21"
         "distribution": "temurin"
+    - name: Set release version
+      run: |
+        RAW="${{ github.event.release.tag_name || github.event.inputs.version }}"
+        VERSION="${RAW#v}"
+        echo "RELEASE_VERSION=${VERSION}" >> $GITHUB_ENV
     - name: Cache Gradle
       uses: actions/cache@v5
       with:
@@ -31,9 +41,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_USERNAME: x-access-token
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
     - name: Publish emottak-utils
       run: ./gradlew --stacktrace publish
       continue-on-error: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_USERNAME: x-access-token
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
