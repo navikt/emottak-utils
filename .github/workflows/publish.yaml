@@ -24,12 +24,12 @@ jobs:
         "distribution": "temurin"
     - name: Set release version
       run: |
-        RAW="${{ github.event.release.tag_name || github.event.inputs.version }}"
-        if [ -z "$RAW" ]; then
-          echo "Error: No release tag or version input provided. Please provide a version or run from a release tag." >&2
+        RAW_VERSION="${{ github.event.release.tag_name || github.event.inputs.version }}"
+        VERSION="${RAW_VERSION#v}"
+        if [ -z "$VERSION" ] || ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?$ ]]; then
+          echo "Error: Invalid or missing version '${VERSION}'. Expected format e.g. 1.2.3 or 1.2.3-SNAPSHOT." >&2
           exit 1
         fi
-        VERSION="${RAW#v}"
         echo "RELEASE_VERSION=${VERSION}" >> $GITHUB_ENV
     - name: Cache Gradle
       uses: actions/cache@v5
