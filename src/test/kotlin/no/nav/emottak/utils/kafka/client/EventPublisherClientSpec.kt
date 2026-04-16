@@ -21,86 +21,99 @@ import no.nav.emottak.utils.kafka.model.EventType
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class EventPublisherClientSpec : KafkaSpec(
-    {
-        val testTopic = "test-topic"
-        lateinit var settings: Kafka
-        lateinit var publisher: EventPublisherClient
+class EventPublisherClientSpec :
+    KafkaSpec(
+        {
+            val testTopic = "test-topic"
+            lateinit var settings: Kafka
+            lateinit var publisher: EventPublisherClient
 
-        beforeSpec {
-            fun kafkaSettings(): Kafka = Kafka(
-                bootstrapServers = container.bootstrapServers,
-                securityProtocol = SecurityProtocol("PLAINTEXT"),
-                keystoreType = KeystoreType(""),
-                keystoreLocation = KeystoreLocation(""),
-                keystorePassword = Masked(""),
-                truststoreType = TruststoreType(""),
-                truststoreLocation = TruststoreLocation(""),
-                truststorePassword = Masked(""),
-                groupId = "ebms-provider"
-            )
+            beforeSpec {
+                fun kafkaSettings(): Kafka =
+                    Kafka(
+                        bootstrapServers = container.bootstrapServers,
+                        securityProtocol = SecurityProtocol("PLAINTEXT"),
+                        keystoreType = KeystoreType(""),
+                        keystoreLocation = KeystoreLocation(""),
+                        keystorePassword = Masked(""),
+                        truststoreType = TruststoreType(""),
+                        truststoreLocation = TruststoreLocation(""),
+                        truststorePassword = Masked(""),
+                        groupId = "ebms-provider",
+                    )
 
-            settings = kafkaSettings()
-            publisher = EventPublisherClient(settings)
-        }
+                settings = kafkaSettings()
+                publisher = EventPublisherClient(settings)
+            }
 
-        afterSpec {
-            container.close()
-        }
+            afterSpec {
+                container.close()
+            }
 
-        "Publish two messages to Kafka - messages are received" {
-            turbineScope {
-                val firstPublishedEvent = randomEvent("Event 1")
-                val lastPublishedEvent = randomEvent("Event 2")
+            "Publish two messages to Kafka - messages are received" {
+                turbineScope {
+                    val firstPublishedEvent = randomEvent("Event 1")
+                    val lastPublishedEvent = randomEvent("Event 2")
 
-                publisher.publishMessage(testTopic, firstPublishedEvent.toByteArray())
-                publisher.publishMessage(testTopic, lastPublishedEvent.toByteArray())
+                    publisher.publishMessage(testTopic, firstPublishedEvent.toByteArray())
+                    publisher.publishMessage(testTopic, lastPublishedEvent.toByteArray())
 
-                val receiver = KafkaReceiver(receiverSettings())
-                val consumer = receiver.receive(testTopic)
-                    .map { Pair(it.key(), it.value()) }
+                    val receiver = KafkaReceiver(receiverSettings())
+                    val consumer =
+                        receiver
+                            .receive(testTopic)
+                            .map { Pair(it.key(), it.value()) }
 
-                consumer.test {
-                    val (_, firstValue) = awaitItem()
-                    compareEvents(firstPublishedEvent, firstValue)
+                    consumer.test {
+                        val (_, firstValue) = awaitItem()
+                        compareEvents(firstPublishedEvent, firstValue)
 
-                    val (_, secondValue) = awaitItem()
-                    compareEvents(lastPublishedEvent, secondValue)
+                        val (_, secondValue) = awaitItem()
+                        compareEvents(lastPublishedEvent, secondValue)
+                    }
                 }
             }
-        }
 
-        "Publish one message to Kafka, with conversationId - message is received" {
-            turbineScope {
-                val event = randomEvent("Event 3", Uuid.random().toString())
-                publisher.publishMessage(testTopic, event.toByteArray())
+            "Publish one message to Kafka, with conversationId - message is received" {
+                turbineScope {
+                    val event = randomEvent("Event 3", Uuid.random().toString())
+                    publisher.publishMessage(testTopic, event.toByteArray())
 
-                val receiver = KafkaReceiver(receiverSettings())
-                val consumer = receiver.receive(testTopic)
-                    .map { Pair(it.key(), it.value()) }
+                    val receiver = KafkaReceiver(receiverSettings())
+                    val consumer =
+                        receiver
+                            .receive(testTopic)
+                            .map { Pair(it.key(), it.value()) }
 
-                consumer.test {
-                    val (_, _) = awaitItem()
-                    val (_, _) = awaitItem()
+                    consumer.test {
+                        val (_, _) = awaitItem()
+                        val (_, _) = awaitItem()
 
-                    val (_, value) = awaitItem()
-                    compareEvents(event, value)
+                        val (_, value) = awaitItem()
+                        compareEvents(event, value)
+                    }
                 }
             }
-        }
-    }
-)
+        },
+    )
 
-private fun randomEvent(eventData: String, conversationId: String? = null): Event = Event(
-    eventType = EventType.entries.random(),
-    requestId = Uuid.random(),
-    contentId = "contentId",
-    messageId = "messageId",
-    eventData = eventData,
-    conversationId = conversationId
-)
+private fun randomEvent(
+    eventData: String,
+    conversationId: String? = null,
+): Event =
+    Event(
+        eventType = EventType.entries.random(),
+        requestId = Uuid.random(),
+        contentId = "contentId",
+        messageId = "messageId",
+        eventData = eventData,
+        conversationId = conversationId,
+    )
 
-private fun compareEvents(event: Event, receivedValue: ByteArray) {
+private fun compareEvents(
+    event: Event,
+    receivedValue: ByteArray,
+) {
     val eventJson = receivedValue.decodeToString()
     val receivedEvent = Json.decodeFromString<Event>(eventJson)
     receivedEvent shouldBe event

@@ -16,7 +16,11 @@ dependencyResolutionManagement {
             library("kotlin-kafka", "io.github.nomisrev", "kotlin-kafka").versionRef("kotlin-kafka")
             library("arrow-fx-coroutines", "io.arrow-kt", "arrow-fx-coroutines").versionRef("arrow-fx-coroutines")
             library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("kotlinx-serialization")
-            library("sqldelight-primitive-adapters", "app.cash.sqldelight", "primitive-adapters").versionRef("sqldelight-primitive-adapters")
+            library(
+                "sqldelight-primitive-adapters",
+                "app.cash.sqldelight",
+                "primitive-adapters",
+            ).versionRef("sqldelight-primitive-adapters")
             library("vault-java-driver", "com.bettercloud", "vault-java-driver").versionRef("vault")
         }
 
@@ -28,8 +32,16 @@ dependencyResolutionManagement {
 
             library("kotest-runner-junit5", "io.kotest", "kotest-runner-junit5").versionRef("kotest")
             library("kotest-framework-datatest", "io.kotest", "kotest-framework-datatest").versionRef("kotest")
-            library("kotest-extensions-testcontainers", "io.kotest.extensions", "kotest-extensions-testcontainers").versionRef("kotest-extensions")
-            library("kotest-extensions-testcontainers-kafka", "io.kotest.extensions", "kotest-extensions-testcontainers-kafka").versionRef("kotest-extensions")
+            library(
+                "kotest-extensions-testcontainers",
+                "io.kotest.extensions",
+                "kotest-extensions-testcontainers",
+            ).versionRef("kotest-extensions")
+            library(
+                "kotest-extensions-testcontainers-kafka",
+                "io.kotest.extensions",
+                "kotest-extensions-testcontainers-kafka",
+            ).versionRef("kotest-extensions")
 
             library("testcontainers", "org.testcontainers", "testcontainers").versionRef("testcontainers")
             library("testcontainers-kafka", "org.testcontainers", "kafka").versionRef("testcontainers")

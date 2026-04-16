@@ -15,48 +15,59 @@ data class Kafka(
     val truststoreType: TruststoreType,
     val truststoreLocation: TruststoreLocation,
     val truststorePassword: Masked,
-    val groupId: String
+    val groupId: String,
 )
 
 data class EventLogging(
     val eventTopic: String,
     val messageDetailsTopic: String,
-    val eventLoggingProducerActive: Boolean
+    val eventLoggingProducerActive: Boolean,
 )
 
-fun Kafka.toProperties() = Properties()
-    .apply {
-        put(SECURITY_PROTOCOL_CONFIG, securityProtocol.value)
-        put(SSL_KEYSTORE_TYPE_CONFIG, keystoreType.value)
-        put(SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation.value)
-        put(SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword.value)
-        put(SSL_TRUSTSTORE_TYPE_CONFIG, truststoreType.value)
-        put(SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation.value)
-        put(SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword.value)
-    }
+fun Kafka.toProperties() =
+    Properties()
+        .apply {
+            put(SECURITY_PROTOCOL_CONFIG, securityProtocol.value)
+            put(SSL_KEYSTORE_TYPE_CONFIG, keystoreType.value)
+            put(SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation.value)
+            put(SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword.value)
+            put(SSL_TRUSTSTORE_TYPE_CONFIG, truststoreType.value)
+            put(SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation.value)
+            put(SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword.value)
+        }
 
 fun Kafka.toKafkaPublisherSettings(): PublisherSettings<String, ByteArray> =
     PublisherSettings(
         bootstrapServers = bootstrapServers,
         keySerializer = StringSerializer(),
         valueSerializer = ByteArraySerializer(),
-        properties = toProperties()
+        properties = toProperties(),
     )
 
 @JvmInline
-value class SecurityProtocol(val value: String)
+value class SecurityProtocol(
+    val value: String,
+)
 
 @JvmInline
-value class KeystoreType(val value: String)
+value class KeystoreType(
+    val value: String,
+)
 
 @JvmInline
-value class KeystoreLocation(val value: String)
+value class KeystoreLocation(
+    val value: String,
+)
 
 @JvmInline
-value class TruststoreType(val value: String)
+value class TruststoreType(
+    val value: String,
+)
 
 @JvmInline
-value class TruststoreLocation(val value: String)
+value class TruststoreLocation(
+    val value: String,
+)
 
 const val SECURITY_PROTOCOL_CONFIG = "security.protocol"
 const val SSL_KEYSTORE_TYPE_CONFIG = "ssl.keystore.type"

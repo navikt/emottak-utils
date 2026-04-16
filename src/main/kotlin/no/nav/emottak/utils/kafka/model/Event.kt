@@ -18,13 +18,12 @@ data class Event(
     val messageId: String,
     val eventData: String = "{}",
     @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant = nowOsloToInstant()
-        .truncatedTo(ChronoUnit.MICROS),
-    val conversationId: String? = null
+    val createdAt: Instant =
+        nowOsloToInstant()
+            .truncatedTo(ChronoUnit.MICROS),
+    val conversationId: String? = null,
 ) {
-    fun toByteArray(): ByteArray {
-        return jsonWithDefaults.encodeToString(this).toByteArray()
-    }
+    fun toByteArray(): ByteArray = jsonWithDefaults.encodeToString(this).toByteArray()
 }
 
 val jsonWithDefaults = Json { encodeDefaults = true }

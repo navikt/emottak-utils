@@ -20,7 +20,9 @@ import java.util.Properties
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
-abstract class KafkaSpec(body: KafkaSpec.() -> Unit = {}) : StringSpec() {
+abstract class KafkaSpec(
+    body: KafkaSpec.() -> Unit = {},
+) : StringSpec() {
     init {
         body()
     }
@@ -42,21 +44,23 @@ abstract class KafkaSpec(body: KafkaSpec.() -> Unit = {}) : StringSpec() {
                     .withEnv("KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR", "1")
                     .withEnv(
                         "KAFKA_TRANSACTION_ABORT_TIMED_OUT_TRANSACTION_CLEANUP_INTERVAL_MS",
-                        transactionTimeoutInterval.inWholeMilliseconds.toString()
+                        transactionTimeoutInterval.inWholeMilliseconds.toString(),
                     )
-                    .withEnv("KAFKA_AUTHORIZER_CLASS_NAME", "org.apache.kafka.metadata.authorizer.StandardAuthorizer") // For KRaft-based clusters
+                    // For KRaft-based clusters
+                    .withEnv("KAFKA_AUTHORIZER_CLASS_NAME", "org.apache.kafka.metadata.authorizer.StandardAuthorizer")
                     .withEnv("KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND", "true")
                     .withReuse(true)
-                    .also { container -> container.start() }
-            )
+                    .also { container -> container.start() },
+            ),
         )
 
-    private fun adminProperties(): Properties = Properties().apply {
-        put(BOOTSTRAP_SERVERS_CONFIG, container.bootstrapServers)
-        put(CLIENT_ID_CONFIG, "test-kafka-admin-client-${Uuid.random()}")
-        put(REQUEST_TIMEOUT_MS_CONFIG, "10000")
-        put(CONNECTIONS_MAX_IDLE_MS_CONFIG, "10000")
-    }
+    private fun adminProperties(): Properties =
+        Properties().apply {
+            put(BOOTSTRAP_SERVERS_CONFIG, container.bootstrapServers)
+            put(CLIENT_ID_CONFIG, "test-kafka-admin-client-${Uuid.random()}")
+            put(REQUEST_TIMEOUT_MS_CONFIG, "10000")
+            put(CONNECTIONS_MAX_IDLE_MS_CONFIG, "10000")
+        }
 
     private fun adminSettings(): AdminSettings = AdminSettings(container.bootstrapServers, adminProperties())
 
@@ -69,6 +73,6 @@ abstract class KafkaSpec(body: KafkaSpec.() -> Unit = {}) : StringSpec() {
             valueDeserializer = ByteArrayDeserializer(),
             groupId = "test-group-id",
             autoOffsetReset = AutoOffsetReset.Earliest,
-            pollTimeout = consumerPollingTimeout
+            pollTimeout = consumerPollingTimeout,
         )
 }

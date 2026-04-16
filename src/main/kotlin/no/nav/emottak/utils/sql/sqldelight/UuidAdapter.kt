@@ -8,5 +8,6 @@ import kotlin.uuid.toKotlinUuid
 
 public data object UuidAdapter : ColumnAdapter<Uuid, UUID> {
     override fun decode(databaseValue: UUID): Uuid = databaseValue.toKotlinUuid()
+
     override fun encode(value: Uuid): UUID = value.toJavaUuid()
 }

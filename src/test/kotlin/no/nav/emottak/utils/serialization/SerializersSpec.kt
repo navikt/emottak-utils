@@ -5,40 +5,41 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 
-class SerializersSpec : StringSpec({
-    "Exception.toJsonString() should return a valid JSON string" {
-        val exception = IllegalArgumentException("Test exception message")
+class SerializersSpec :
+    StringSpec({
+        "Exception.toJsonString() should return a valid JSON string" {
+            val exception = IllegalArgumentException("Test exception message")
 
-        val jsonString = exception.toJsonString()
+            val jsonString = exception.toJsonString()
 
-        jsonString shouldNotBe ""
-        jsonString shouldContain "\"ExceptionClass\":\"java.lang.IllegalArgumentException\""
-        jsonString shouldContain "\"message\":\"Test exception message\""
-        jsonString shouldContain "\"causeMessage\":\"null\""
-    }
+            jsonString shouldNotBe ""
+            jsonString shouldContain "\"ExceptionClass\":\"java.lang.IllegalArgumentException\""
+            jsonString shouldContain "\"message\":\"Test exception message\""
+            jsonString shouldContain "\"causeMessage\":\"null\""
+        }
 
-    "getErrorMessage() should return cause message if localizedMessage is null" {
-        val cause = Exception("Cause message")
-        val exception = IllegalArgumentException(null, cause)
+        "getErrorMessage() should return cause message if localizedMessage is null" {
+            val cause = Exception("Cause message")
+            val exception = IllegalArgumentException(null, cause)
 
-        val errorMessage = exception.getErrorMessage()
+            val errorMessage = exception.getErrorMessage()
 
-        errorMessage shouldBe "Cause message"
-    }
+            errorMessage shouldBe "Cause message"
+        }
 
-    "getErrorMessage() should return exception class name if both localizedMessage and cause message are null" {
-        val exception = IllegalArgumentException(null, null)
+        "getErrorMessage() should return exception class name if both localizedMessage and cause message are null" {
+            val exception = IllegalArgumentException(null, null)
 
-        val errorMessage = exception.getErrorMessage()
+            val errorMessage = exception.getErrorMessage()
 
-        errorMessage shouldBe "IllegalArgumentException"
-    }
+            errorMessage shouldBe "IllegalArgumentException"
+        }
 
-    "toEventDataJson() should return a valid JSON string" {
-        val exception = IllegalArgumentException("Test exception message")
+        "toEventDataJson() should return a valid JSON string" {
+            val exception = IllegalArgumentException("Test exception message")
 
-        val jsonString = exception.toEventDataJson()
+            val jsonString = exception.toEventDataJson()
 
-        jsonString shouldBe "{\"error_message\":\"Test exception message\"}"
-    }
-})
+            jsonString shouldBe "{\"error_message\":\"Test exception message\"}"
+        }
+    })
