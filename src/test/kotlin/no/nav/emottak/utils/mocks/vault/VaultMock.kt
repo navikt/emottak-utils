@@ -1,15 +1,17 @@
 package no.nav.emottak.utils.mocks.vault
 
 import com.bettercloud.vault.json.JsonObject
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
+import org.eclipse.jetty.http.HttpHeader
+import org.eclipse.jetty.io.Content
+import org.eclipse.jetty.server.Handler
 import org.eclipse.jetty.server.Request
-import org.eclipse.jetty.server.handler.AbstractHandler
+import org.eclipse.jetty.server.Response
+import org.eclipse.jetty.util.Callback
 import java.util.Optional
 
 /**
  * This class is used to mock out a Vault server in unit tests involving retry logic. As it extends Jetty's
- * `AbstractHandler`, it can be passed to an embedded Jetty server and respond to actual (albeit
+ * `Handler.Abstract`, it can be passed to an embedded Jetty server and respond to actual (albeit
  * localhost) HTTP requests.
  *
  *
@@ -35,41 +37,39 @@ import java.util.Optional
  * VaultTestUtils.shutdownVaultMock(server)`
  * </blockquote>
  */
-class VaultMock : AbstractHandler {
-    private var mockStatus = 0
-    private lateinit var mockResponses: Map<String, String>
+class VaultMock(
+    private var mockStatus: Int = 0,
+    private var mockResponses: Map<String, String> = emptyMap()
+) : Handler.Abstract() {
     private var requestBody: JsonObject? = null
     private var requestHeaders: Map<String, String>? = null
     private var requestUrl: String? = null
 
-    internal constructor()
-
-    constructor(mockStatus: Int, mockResponses: Map<String, String>) {
-        this.mockStatus = mockStatus
-        this.mockResponses = mockResponses
-    }
-
-    override fun handle(target: String?, baseRequest: Request?, req: HttpServletRequest?, resp: HttpServletResponse?) {
-        requestBody = VaultTestUtils.readRequestBody(req).orElse(null)
-        requestHeaders = VaultTestUtils.readRequestHeaders(req)
-        requestUrl = req!!.requestURL.toString()
+    override fun handle(request: Request, response: Response, callback: Callback): Boolean {
+        requestBody = VaultTestUtils.readRequestBody(request).orElse(null)
+        requestHeaders = VaultTestUtils.readRequestHeaders(request)
+        requestUrl = request.httpURI.toString()
         println("VaultMock responding to request: $requestUrl")
-        baseRequest!!.isHandled = true
-        resp!!.status = mockStatus
-        resp.contentType = "application/json"
-        val path = req.pathInfo.split("/v1/").last()
 
+        response.headers.put(HttpHeader.CONTENT_TYPE, "application/json")
+        val path = request.httpURI.path.split("/v1/").last()
+
+        val body: String
         if (path == "auth/token/lookup-self") {
-            resp.status = 200
-            resp.writer.println("{\"data\": {\"policies\": []}}")
+            response.status = 200
+            body = "{\"data\": {\"policies\": []}}"
         } else if (mockResponses.containsKey(path)) {
             println("VaultMock is sending an HTTP $mockStatus code, with expected payload...")
-            resp.writer.println(mockResponses[path])
+            response.status = mockStatus
+            body = mockResponses[path]!!
         } else {
             println("WARN: Unexpected path: '$path'")
-            resp.status = 404
-            resp.writer.println("{\"errors\":[\"Path not found: '$path'\"]}")
+            response.status = 404
+            body = "{\"errors\":[\"Path not found: '$path'\"]}"
         }
+
+        Content.Sink.write(response, true, body, callback)
+        return true
     }
 
     fun getRequestBody(): Optional<JsonObject> {
