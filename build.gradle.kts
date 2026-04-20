@@ -58,6 +58,6 @@ dependencies {
     testImplementation(testLibs.testcontainers.kafka)
     testImplementation(testLibs.turbine)
 
-    testImplementation("org.eclipse.jetty:jetty-server:11.0.25")
+    testImplementation("org.eclipse.jetty:jetty-server:12.1.8")
     testImplementation("commons-io:commons-io:2.21.0")
 }
