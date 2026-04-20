@@ -12,79 +12,80 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.cancellation.CancellationException
 
-class ResourceScopeSpec : StringSpec(
-    {
-        "create coroutineScope as a resource" {
-            resourceScope {
-                val parentJob = coroutineContext[Job]
-                val parentDispatcher = coroutineContext[CoroutineDispatcher]
+class ResourceScopeSpec :
+    StringSpec(
+        {
+            "create coroutineScope as a resource" {
+                resourceScope {
+                    val parentJob = coroutineContext[Job]
+                    val parentDispatcher = coroutineContext[CoroutineDispatcher]
 
-                val scope = coroutineScope(coroutineContext)
+                    val scope = coroutineScope(coroutineContext)
 
-                scope.shouldBeInstanceOf<CoroutineScope>()
+                    scope.shouldBeInstanceOf<CoroutineScope>()
 
-                val scopeJob = scope.coroutineContext[Job]
-                val scopeDispatcher = scope.coroutineContext[CoroutineDispatcher]
+                    val scopeJob = scope.coroutineContext[Job]
+                    val scopeDispatcher = scope.coroutineContext[CoroutineDispatcher]
 
-                scopeJob shouldNotBe null
-                parentJob shouldNotBe null
+                    scopeJob shouldNotBe null
+                    parentJob shouldNotBe null
 
-                scopeJob!!.isActive shouldBe true
-                parentJob!!.isActive shouldBe true
+                    scopeJob!!.isActive shouldBe true
+                    parentJob!!.isActive shouldBe true
 
-                scopeDispatcher shouldBe parentDispatcher
+                    scopeDispatcher shouldBe parentDispatcher
 
-                val deferred = scope.async { "async" }
+                    val deferred = scope.async { "async" }
 
-                scopeJob.children shouldNotBe emptySequence<Job>()
+                    scopeJob.children shouldNotBe emptySequence<Job>()
 
-                deferred.await() shouldBe "async"
+                    deferred.await() shouldBe "async"
 
-                scopeJob.cancel()
+                    scopeJob.cancel()
 
-                scopeJob.isActive shouldBe false
-                deferred.isActive shouldBe false
+                    scopeJob.isActive shouldBe false
+                    deferred.isActive shouldBe false
+                }
             }
-        }
 
-        "coroutineScope completes successfully and cancels job" {
-            resourceScope {
-                val scope = coroutineScope(coroutineContext)
-                val job = scope.coroutineContext[Job]
+            "coroutineScope completes successfully and cancels job" {
+                resourceScope {
+                    val scope = coroutineScope(coroutineContext)
+                    val job = scope.coroutineContext[Job]
 
-                scope.cancel()
-                job!!.join()
-                job.isCancelled shouldBe true
+                    scope.cancel()
+                    job!!.join()
+                    job.isCancelled shouldBe true
+                }
             }
-        }
 
-        "coroutineScope cancels job when cancelled externally" {
-            resourceScope {
-                val scope = coroutineScope(coroutineContext)
-                val job = scope.coroutineContext[Job]
+            "coroutineScope cancels job when cancelled externally" {
+                resourceScope {
+                    val scope = coroutineScope(coroutineContext)
+                    val job = scope.coroutineContext[Job]
 
-                val exception = CancellationException("Test Cancellation")
-                scope.cancel(exception)
+                    val exception = CancellationException("Test Cancellation")
+                    scope.cancel(exception)
 
-                job!!.join()
-                job.isCancelled shouldBe true
-                job.getCancellationException().message shouldBe "Test Cancellation"
+                    job!!.join()
+                    job.isCancelled shouldBe true
+                    job.getCancellationException().message shouldBe "Test Cancellation"
+                }
             }
-        }
 
-        "coroutineScope cancels job with failure" {
-            resourceScope {
-                val scope = coroutineScope(coroutineContext)
-                val job = scope.coroutineContext[Job]
+            "coroutineScope cancels job with failure" {
+                resourceScope {
+                    val scope = coroutineScope(coroutineContext)
+                    val job = scope.coroutineContext[Job]
 
-                val failure = RuntimeException("BOOM")
-                val exception = CancellationException(failure)
-                scope.cancel(exception)
+                    val failure = RuntimeException("BOOM")
+                    val exception = CancellationException(failure)
+                    scope.cancel(exception)
 
-                job!!.join()
-                job.isCancelled shouldBe true
-                job.getCancellationException().cause shouldBe failure
+                    job!!.join()
+                    job.isCancelled shouldBe true
+                    job.getCancellationException().cause shouldBe failure
+                }
             }
-        }
-    }
-)
+        },
+    )

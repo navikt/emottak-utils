@@ -49,7 +49,12 @@ class VaultMock : AbstractHandler {
         this.mockResponses = mockResponses
     }
 
-    override fun handle(target: String?, baseRequest: Request?, req: HttpServletRequest?, resp: HttpServletResponse?) {
+    override fun handle(
+        target: String?,
+        baseRequest: Request?,
+        req: HttpServletRequest?,
+        resp: HttpServletResponse?,
+    ) {
         requestBody = VaultTestUtils.readRequestBody(req).orElse(null)
         requestHeaders = VaultTestUtils.readRequestHeaders(req)
         requestUrl = req!!.requestURL.toString()
@@ -72,7 +77,5 @@ class VaultMock : AbstractHandler {
         }
     }
 
-    fun getRequestBody(): Optional<JsonObject> {
-        return Optional.ofNullable(requestBody)
-    }
+    fun getRequestBody(): Optional<JsonObject> = Optional.ofNullable(requestBody)
 }
