@@ -10,40 +10,47 @@ import no.nav.emottak.utils.kafka.model.EventDataType
 import java.time.Instant
 import kotlin.uuid.Uuid
 
-val LENIENT_JSON_PARSER = Json {
-    encodeDefaults = true
-    isLenient = true
-    allowSpecialFloatingPointValues = true
-    allowStructuredMapKeys = true
-    prettyPrint = false
-    useArrayPolymorphism = false
-    ignoreUnknownKeys = true
-}
+val LENIENT_JSON_PARSER =
+    Json {
+        encodeDefaults = true
+        isLenient = true
+        allowSpecialFloatingPointValues = true
+        allowStructuredMapKeys = true
+        prettyPrint = false
+        useArrayPolymorphism = false
+        ignoreUnknownKeys = true
+    }
 
 // Inspirert av: https://stackoverflow.com/questions/65398284/kotlin-serialization-serializer-has-not-been-found-for-type-uuid
 object UuidSerializer : KSerializer<Uuid> {
     override val descriptor = PrimitiveSerialDescriptor("Uuid", PrimitiveKind.STRING)
+
     override fun deserialize(decoder: Decoder) = Uuid.parse(decoder.decodeString())
-    override fun serialize(encoder: Encoder, value: Uuid) = encoder.encodeString(value.toString())
+
+    override fun serialize(
+        encoder: Encoder,
+        value: Uuid,
+    ) = encoder.encodeString(value.toString())
 }
 
 // Hentet fra: https://stackoverflow.com/questions/71629874/how-to-use-kotlinx-serialization-serializable-with-java-time-instant
 object InstantSerializer : KSerializer<Instant> {
     override val descriptor = PrimitiveSerialDescriptor("java.time.Instant", PrimitiveKind.STRING)
-    override fun serialize(encoder: Encoder, value: Instant) = encoder.encodeString(value.toString())
+
+    override fun serialize(
+        encoder: Encoder,
+        value: Instant,
+    ) = encoder.encodeString(value.toString())
+
     override fun deserialize(decoder: Decoder): Instant = Instant.parse(decoder.decodeString())
 }
 
-fun Exception.toJsonString(): String {
-    return "{\"ExceptionClass\":\"${this.javaClass.name}\", \"message\":\"${this.message}\", \"causeMessage\":\"${this.cause?.message}\"}"
-}
+fun Exception.toJsonString(): String =
+    "{\"ExceptionClass\":\"${this.javaClass.name}\", \"message\":\"${this.message}\", \"causeMessage\":\"${this.cause?.message}\"}"
 
-fun Exception.getErrorMessage(): String {
-    return localizedMessage ?: cause?.message ?: javaClass.simpleName
-}
+fun Exception.getErrorMessage(): String = localizedMessage ?: cause?.message ?: javaClass.simpleName
 
-fun Exception.toEventDataJson(): String {
-    return Json.encodeToString(
-        mapOf(EventDataType.ERROR_MESSAGE.value to this.getErrorMessage())
+fun Exception.toEventDataJson(): String =
+    Json.encodeToString(
+        mapOf(EventDataType.ERROR_MESSAGE.value to this.getErrorMessage()),
     )
-}

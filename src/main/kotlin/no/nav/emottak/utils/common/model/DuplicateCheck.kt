@@ -12,11 +12,11 @@ data class DuplicateCheckRequest(
     val requestId: String,
     val messageId: String,
     val conversationId: String,
-    val cpaId: String
+    val cpaId: String,
 )
 
 @Serializable
 data class DuplicateCheckResponse(
     val requestId: String,
-    val isDuplicate: Boolean
+    val isDuplicate: Boolean,
 )

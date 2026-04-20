@@ -21,20 +21,26 @@ import java.util.Optional
 object VaultTestUtils {
     private lateinit var server: Server
 
-    fun initHttpsVaultMock(mock: VaultMock, port: Int = 9998) {
+    fun initHttpsVaultMock(
+        mock: VaultMock,
+        port: Int = 9998,
+    ) {
         server = Server()
         val sslContextFactory: SslContextFactory.Server = SslContextFactory.Server()
-        sslContextFactory.keyStorePath = VaultTestUtils::class.java.classLoader
-            .getResource("vault/keystore.jks")!!.toExternalForm()
+        sslContextFactory.keyStorePath =
+            VaultTestUtils::class.java.classLoader
+                .getResource("vault/keystore.jks")!!
+                .toExternalForm()
         sslContextFactory.keyStorePassword = "password"
         sslContextFactory.keyManagerPassword = "password"
         val https = HttpConfiguration()
         https.addCustomizer(SecureRequestCustomizer())
-        val sslConnector = ServerConnector(
-            server,
-            SslConnectionFactory(sslContextFactory, "http/1.1"),
-            HttpConnectionFactory(https)
-        )
+        val sslConnector =
+            ServerConnector(
+                server,
+                SslConnectionFactory(sslContextFactory, "http/1.1"),
+                HttpConnectionFactory(https),
+            )
         sslConnector.port = port
         server.connectors = arrayOf<Connector>(sslConnector)
 

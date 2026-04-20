@@ -25,10 +25,9 @@ data class EbmsMessageDetail(
     @Serializable(with = InstantSerializer::class)
     val sentAt: Instant? = null,
     @Serializable(with = InstantSerializer::class)
-    val savedAt: Instant = nowOsloToInstant()
-        .truncatedTo(ChronoUnit.MICROS)
+    val savedAt: Instant =
+        nowOsloToInstant()
+            .truncatedTo(ChronoUnit.MICROS),
 ) {
-    fun toByteArray(): ByteArray {
-        return jsonWithDefaults.encodeToString(this).toByteArray()
-    }
+    fun toByteArray(): ByteArray = jsonWithDefaults.encodeToString(this).toByteArray()
 }

@@ -1,6 +1,9 @@
 package no.nav.emottak.utils.kafka.model
 
-enum class EventType(val value: Int, val description: String) {
+enum class EventType(
+    val value: Int,
+    val description: String,
+) {
     MESSAGE_RECEIVED_VIA_SMTP(1, "Melding mottatt via SMTP"),
     ERROR_WHILE_RECEIVING_MESSAGE_VIA_SMTP(2, "Feil ved mottak av melding via SMTP"),
     MESSAGE_SENT_VIA_SMTP(3, "Melding sendt via SMTP"),
@@ -44,18 +47,18 @@ enum class EventType(val value: Int, val description: String) {
     UNKNOWN_ERROR_OCCURRED(41, "Ukjent feil oppsto!"),
     REFERENCE_RETRIEVED(42, "Reference hentet"),
     MESSAGEFLOW_COMPLETED(43, "Melding ferdigbehandlet"),
-    RETRY_TRIGGED(44, "Melding rekjøres");
+    RETRY_TRIGGED(44, "Melding rekjøres"),
+    ;
 
     companion object {
-        fun fromInt(eventCode: Int): EventType {
-            return EventType.entries.find {
+        fun fromInt(eventCode: Int): EventType =
+            EventType.entries.find {
                 it.value == eventCode
             } ?: throw IllegalArgumentException("Unrecognized EventType code value: $eventCode")
-        }
-        fun fromString(description: String): EventType {
-            return EventType.entries.find {
+
+        fun fromString(description: String): EventType =
+            EventType.entries.find {
                 it.description.equals(description)
             } ?: throw IllegalArgumentException("Unrecognized EventType description: '$description'")
-        }
     }
 }

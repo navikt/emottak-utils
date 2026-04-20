@@ -2,8 +2,7 @@ plugins {
     kotlin("jvm") version "2.3.20"
     kotlin("plugin.serialization") version "2.3.20"
     id("maven-publish")
-    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
-    id("org.jlleitschuh.gradle.ktlint-idea") version "11.6.1"
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
 tasks {
@@ -17,7 +16,9 @@ tasks {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
     compilerOptions {
-        freeCompilerArgs = listOf("-opt-in=kotlin.ExperimentalStdlibApi,kotlinx.coroutines.InternalCoroutinesApi,kotlin.uuid.ExperimentalUuidApi")
+        optIn.add("kotlin.ExperimentalStdlibApi")
+        optIn.add("kotlinx.coroutines.InternalCoroutinesApi")
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
     }
 }
 

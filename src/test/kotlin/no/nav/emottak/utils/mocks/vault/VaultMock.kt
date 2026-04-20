@@ -72,7 +72,5 @@ class VaultMock(
         return true
     }
 
-    fun getRequestBody(): Optional<JsonObject> {
-        return Optional.ofNullable(requestBody)
-    }
+    fun getRequestBody(): Optional<JsonObject> = Optional.ofNullable(requestBody)
 }
