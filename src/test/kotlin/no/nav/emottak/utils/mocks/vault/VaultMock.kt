@@ -39,20 +39,27 @@ import java.util.Optional
  */
 class VaultMock(
     private var mockStatus: Int = 0,
-    private var mockResponses: Map<String, String> = emptyMap()
+    private var mockResponses: Map<String, String> = emptyMap(),
 ) : Handler.Abstract() {
     private var requestBody: JsonObject? = null
     private var requestHeaders: Map<String, String>? = null
     private var requestUrl: String? = null
 
-    override fun handle(request: Request, response: Response, callback: Callback): Boolean {
+    override fun handle(
+        request: Request,
+        response: Response,
+        callback: Callback,
+    ): Boolean {
         requestBody = VaultTestUtils.readRequestBody(request).orElse(null)
         requestHeaders = VaultTestUtils.readRequestHeaders(request)
         requestUrl = request.httpURI.toString()
         println("VaultMock responding to request: $requestUrl")
 
         response.headers.put(HttpHeader.CONTENT_TYPE, "application/json")
-        val path = request.httpURI.path.split("/v1/").last()
+        val path =
+            request.httpURI.path
+                .split("/v1/")
+                .last()
 
         val body: String
         if (path == "auth/token/lookup-self") {
