@@ -59,5 +59,5 @@ dependencies {
     testImplementation(testLibs.turbine)
 
     testImplementation("org.eclipse.jetty:jetty-server:12.1.8")
-    testImplementation("commons-io:commons-io:2.21.0")
+    testImplementation("commons-io:commons-io:2.22.0")
 }
