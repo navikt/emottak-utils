@@ -2,6 +2,7 @@ package no.nav.emottak.utils.config
 
 import com.sksamuel.hoplite.Masked
 import io.github.nomisRev.kafka.publisher.PublisherSettings
+import org.apache.kafka.clients.CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_RECORDS_CONFIG
 import org.apache.kafka.common.serialization.ByteArraySerializer
 import org.apache.kafka.common.serialization.StringSerializer
@@ -29,6 +30,7 @@ data class EventLogging(
 fun Kafka.toProperties() =
     Properties()
         .apply {
+            put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
             put(SECURITY_PROTOCOL_CONFIG, securityProtocol.value)
             put(SSL_KEYSTORE_TYPE_CONFIG, keystoreType.value)
             put(SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation.value)
