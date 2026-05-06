@@ -2,6 +2,7 @@ package no.nav.emottak.utils.config
 
 import com.sksamuel.hoplite.Masked
 import io.github.nomisRev.kafka.publisher.PublisherSettings
+import org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_RECORDS_CONFIG
 import org.apache.kafka.common.serialization.ByteArraySerializer
 import org.apache.kafka.common.serialization.StringSerializer
 import java.util.Properties
@@ -16,6 +17,7 @@ data class Kafka(
     val truststoreLocation: TruststoreLocation,
     val truststorePassword: Masked,
     val groupId: String,
+    val maxPollRecords: Int = 50,
 )
 
 data class EventLogging(
@@ -34,6 +36,7 @@ fun Kafka.toProperties() =
             put(SSL_TRUSTSTORE_TYPE_CONFIG, truststoreType.value)
             put(SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation.value)
             put(SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword.value)
+            put(MAX_POLL_RECORDS_CONFIG, maxPollRecords.toString())
         }
 
 fun Kafka.toKafkaPublisherSettings(): PublisherSettings<String, ByteArray> =
