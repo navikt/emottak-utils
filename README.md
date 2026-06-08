@@ -7,7 +7,7 @@ Dette biblioteket inneholder funksjoner og domenemodeller som flere prosjekter h
 
 ## Publisering
 
-Biblioteket publiseres til [GitHub Packages](https://maven.pkg.github.com/navikt/emottak-utils) (`maven.pkg.github.com/navikt/emottak-utils`). Versjonen settes automatisk fra release-taggen. 
+Biblioteket publiseres ved hjelp av Github Releases. Versjonen settes automatisk fra release-taggen. 
 Det er ikke nødvendig å oppdatere versjon i `gradle.properties`. Dette gjøres automatisk ved release.
 
 ### Release-prosess
