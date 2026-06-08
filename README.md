@@ -5,28 +5,28 @@ Dette biblioteket inneholder funksjoner og domenemodeller som flere prosjekter h
 * Oppsett av Kafka, inkludert Event-publisher for å logge hendelser
 * Interaksjon mot Vault
 
+## Publisering
+
+Biblioteket publiseres til [GitHub Packages](https://maven.pkg.github.com/navikt/emottak-utils) (`maven.pkg.github.com/navikt/emottak-utils`). Versjonen settes automatisk fra release-taggen. 
+Det er ikke nødvendig å oppdatere versjon i `gradle.properties`. Dette gjøres automatisk ved release.
+
 ### Release-prosess
-Release utføres på følgende måte:
-1. Sett ønsket versjonsnummer i `build.gradle.kts` og kjør commit/push.
-2. Velg korrekt release-metode:
-   * **For å utføre en offentlig release:**
-     - a) Naviger til https://github.com/navikt/emottak-utils/releases og klikk på `Draft a new release`. 
-     - b) Klikk på `Choose a tag`, tast inn et versjonsnummer (f.eks. `v1.2.3`) og klikk `+ Create new tag: ... on publish`.
-         <details>
-         <summary>Vi følger semantisk versjonering</summary>
-         
-         Semantisk versjonering som betyr at vi skal kunne lese ut om en endring er bakoverkompatibel eller ikke i forhold til forrige versjon: **Major.Minor.Patch**
-         
-         * **Eksempel på ikke-bakoverkompatibel endring (ny major-versjon):** Flyttet klasser/filer, utført refaktorisering av ikke-private klasser/felter, endret delte domenemodeller.
-         * **Eksempel på bakoverkompatibel endring (ny minor-versjon):** Lagt til nye klasser/filer, eventuelt nye funksjoner i eksisterende klasser/filer.
-         * **Eksempel på patch-endring:** Rettet feil i eksisterende logikk/kode.
-         </details>
-     - c) Velg kodestrøm det skal releases fra (helst bør vi _kun_ release fra main).
-     - d) `Previous tag`: Velg auto hvis release er høyeste versjon, ellers til ønsket versjon som den skal etterfølge. Hvis sistnevnte: Fjern hake nederst på `Set as the latest release`.
-     - e) Tast inn tag som `Release title` (f.eks. `v1.2.3`).
-     - f) Legg inn en god beskrivelse på hva som er nytt, hva som er endret, osv.
-     - g) Klikk på `Publish release` for å starte release-prosessen.
-   
-   * **For å utføre en testrelease:**
-     - a) Naviger til Actions, og klikk på jobben `Publish emottak-utils library` i lista til venstre: https://github.com/navikt/emottak-utils/actions/workflows/publish.yaml.
-     - b) Klikk `Run workflow`, og velg din branch.
+
+**For å publisere en ny release:**
+1. Naviger til [Releases](https://github.com/navikt/emottak-utils/releases) og klikk `Draft a new release`
+2. Opprett en ny tag (f.eks. `v1.2.3`) ved hjelp av semantisk versjonering
+3. Klikk `Generate release notes` for å opprette en automatisk changelog basert på pull requests siden forrige release
+4. Gjennomgå og rediger release notes etter behov
+5. Publiser releasen. Dette starter automatisk publish-workflowen
+
+**For å publisere en testrelease (snapshot eller pre-release):**
+1. Gå til [Actions](https://github.com/navikt/emottak-utils/actions/workflows/publish.yaml) og åpne `Publish emottak-utils library`
+2. Klikk `Run workflow`, velg din branch
+3. Oppgi ønsket versjonsnummer (f.eks. `1.2.3-SNAPSHOT` eller `1.2.3-test.1`)
+
+### Semantisk versjonering
+
+Vi følger semantisk versjonering (**Major.Minor.Patch**):
+- **Major:** Breaking changes (flyttet/omdøpte klasser, refaktorering av offentlig API, endret delte domenemodeller)
+- **Minor:** Nye features (nye klasser, nye offentlige metoder)
+- **Patch:** Feilrettinger i eksisterende kode
