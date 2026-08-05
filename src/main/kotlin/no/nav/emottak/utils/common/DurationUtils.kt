@@ -16,7 +16,7 @@ internal fun LocalTime.durationUntil(now: LocalDateTime = LocalDateTime.now()): 
         .toKotlinDuration()
 }
 
-/** Lesbar presentasjon av en Duration, slik som "1 day, 3 hours, 30 minutes". */
+/** Lesbar presentasjon av en Duration, slik som "1 days, 3 hours, 30 minutes". */
 internal fun Duration.readableInterval(): String {
     this.toComponents { days, hours, minutes, seconds, nanoseconds ->
         var readable = ""
