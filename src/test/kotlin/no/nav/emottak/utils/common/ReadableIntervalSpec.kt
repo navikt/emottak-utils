@@ -62,7 +62,7 @@ class ReadableIntervalSpec :
             interval.readableInterval() shouldBe "2 days, 2 hours"
         }
 
-        "should return '1 hours, 30 minutes' when Duration is '90h'" {
+        "should return '1 hours, 30 minutes' when Duration is '90m'" {
             val interval = Duration.parse("90m")
             interval.readableInterval() shouldBe "1 hours, 30 minutes"
         }
