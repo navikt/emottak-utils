@@ -21,7 +21,7 @@ class DurationUntilSpec :
             duration.inWholeMinutes shouldBe 90
         }
 
-        "should return Duration of 90 minutes when 'now' is 10:00 and LocalTime is 20:00" {
+        "should return Duration of 10 hours when 'now' is 10:00 and LocalTime is 20:00" {
             val time = LocalTime.parse("20:00")
             val duration = time.durationUntil(now)
             duration.inWholeHours shouldBe 10
