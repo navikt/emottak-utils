@@ -16,9 +16,12 @@ data class SendInRequest(
     val addressing: Addressing,
     val cpaId: String,
     val ebmsProcessing: EbmsProcessing,
+    @Deprecated("Use signedByPid and signedByOrg instead")
     val signedOf: String? = null,
     val requestId: String,
     val partnerId: Long? = null,
+    val signedByPid: String? = null,
+    val signedByOrg: String? = null,
 )
 
 @Serializable
