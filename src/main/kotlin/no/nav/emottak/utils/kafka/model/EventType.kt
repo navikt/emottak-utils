@@ -7,11 +7,11 @@ enum class EventType(
     MESSAGE_RECEIVED_VIA_SMTP(1, "Melding mottatt via SMTP"),
     ERROR_WHILE_RECEIVING_MESSAGE_VIA_SMTP(2, "Feil ved mottak av melding via SMTP"),
     MESSAGE_SENT_VIA_SMTP(3, "Melding sendt via SMTP"),
-    ERROR_WHILE_SENDING_MESSAGE_VIA_SMTP(4, "Feil ved utsending melding via SMTP"),
+    ERROR_WHILE_SENDING_MESSAGE_VIA_SMTP(4, "Feil ved utsending via SMTP"),
     MESSAGE_RECEIVED_VIA_HTTP(5, "Melding mottatt via HTTP"),
     ERROR_WHILE_RECEIVING_MESSAGE_VIA_HTTP(6, "Feil ved mottak av melding via HTTP"),
     MESSAGE_SENT_VIA_HTTP(7, "Melding sendt via HTTP"),
-    ERROR_WHILE_SENDING_MESSAGE_VIA_HTTP(8, "Feil ved utsending melding via HTTP"),
+    ERROR_WHILE_SENDING_MESSAGE_VIA_HTTP(8, "Feil ved utsending via HTTP"),
     PAYLOAD_SAVED_INTO_DATABASE(9, "Payload lagret i database"),
     ERROR_WHILE_SAVING_PAYLOAD_INTO_DATABASE(10, "Feil ved lagring payload i database"),
     PAYLOAD_READ_FROM_DATABASE(11, "Payload lest fra database"),
@@ -37,7 +37,7 @@ enum class EventType(
     OCSP_CHECK_SUCCESSFUL(31, "OCSP-sjekk vellykket"),
     OCSP_CHECK_FAILED(32, "OCSP-sjekk mislykket"),
     MESSAGE_SENT_TO_FAGSYSTEM(33, "Melding sendt til fagsystem"),
-    ERROR_WHILE_SENDING_MESSAGE_TO_FAGSYSTEM(34, "Feil ved utsending melding til fagsystem"),
+    ERROR_WHILE_SENDING_MESSAGE_TO_FAGSYSTEM(34, "Feil ved innsending til fagsystem"),
     MESSAGE_RECEIVED_FROM_FAGSYSTEM(35, "Melding mottatt fra fagsystem"),
     ERROR_WHILE_RECEIVING_MESSAGE_FROM_FAGSYSTEM(36, "Feil ved mottak av melding fra fagsystem"),
     MESSAGE_VALIDATED_AGAINST_CPA(37, "Melding validert mot CPA"),
@@ -48,6 +48,7 @@ enum class EventType(
     REFERENCE_RETRIEVED(42, "Reference hentet"),
     MESSAGEFLOW_COMPLETED(43, "Melding ferdigbehandlet"),
     RETRY_TRIGGED(44, "Melding rekjøres"),
+    GENERIC_EVENT(45, "Generell hendelse"),
     ;
 
     companion object {
