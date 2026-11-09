@@ -49,6 +49,8 @@ enum class EventType(
     MESSAGEFLOW_COMPLETED(43, "Melding ferdigbehandlet"),
     RETRY_TRIGGED(44, "Melding rekjøres"),
     GENERIC_EVENT(45, "Generell hendelse"),
+    GENERIC_WARNING(46, "Generell advarsel"),
+    GENERIC_ERROR(47, "Generell feil"),
     ;
 
     companion object {
@@ -59,7 +61,7 @@ enum class EventType(
 
         fun fromString(description: String): EventType =
             EventType.entries.find {
-                it.description.equals(description)
+                it.description == description
             } ?: throw IllegalArgumentException("Unrecognized EventType description: '$description'")
     }
 }
